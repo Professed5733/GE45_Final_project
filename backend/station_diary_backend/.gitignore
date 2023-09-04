@@ -1,0 +1,19 @@
+# Project files and directories
+/station_diary_backend/local_settings.py
+/station_diary_backend/static/
+/station_diary_backend/tmp/
+/station_diary_backend/media/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+logs/
+
+# Temp files
+temp/
+
+# Test files
+tests/
