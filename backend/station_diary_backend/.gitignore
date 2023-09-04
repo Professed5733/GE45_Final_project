@@ -17,3 +17,6 @@ temp/
 
 # Test files
 tests/
+
+# Env files
+.env/
