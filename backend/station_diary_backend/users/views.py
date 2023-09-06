@@ -3,10 +3,11 @@ from django.http import HttpResponse
 from .models import Rank, Role, PoliceStation, Division
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import DivisionSerializer, RankSerializer, RoleSerializer, PoliceStationSerializer
+from .serializers import DivisionSerializer, RankSerializer, RoleSerializer, PoliceStationSerializer, ChangePasswordSerializer
 from rest_framework import status
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -96,3 +97,22 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+class ChangePasswordView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            user = request.user
+
+            # Check if the old password is correct
+            if not user.check_password(serializer.validated_data['old_password']):
+                return Response({'detail': 'Old password is incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Set the new password
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+            return Response({'detail': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
