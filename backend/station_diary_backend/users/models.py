@@ -28,6 +28,7 @@ class PoliceStation(models.Model):
     def __str__(self):
         return self.station
 
+
 class AccountManager(BaseUserManager):
     def create_user(self, email, full_name, password=None):
         if not email:
