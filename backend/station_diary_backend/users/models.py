@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 import uuid
 
 # Create your models here.
@@ -53,7 +53,7 @@ class AccountManager(BaseUserManager):
         user.is_admin = True
         user.save(using=self.db)
         return user
-class Account(AbstractBaseUser):
+class Account(AbstractBaseUser, PermissionsMixin):
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(verbose_name='email', max_length=60, unique=True)
     full_name = models.CharField(max_length=50)
@@ -70,6 +70,7 @@ class Account(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name']
+    USER_ID_FIELD = 'user_id'
 
     def __str__(self):
         return f'{self.full_name}'
