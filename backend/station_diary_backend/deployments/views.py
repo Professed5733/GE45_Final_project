@@ -36,22 +36,22 @@ class seedBase(APIView):
 
         sectors_to_add = [
             {
-                'sector': 'Sector 1',
+                'sector': 'J5R1',
                 'station': PoliceStation.objects.get(station="Nanyang Neighbourhood Police Centre"),
                 'description': 'Jurong West Avenue 5, Jurong West Street 75, Jurong West Street 81, Jurong West Street 92',
             },
             {
-                'sector': 'Sector 2',
+                'sector': 'J5R2',
                 'station': PoliceStation.objects.get(station="Nanyang Neighbourhood Police Centre"),
                 'description': 'International Road, Upper Jurong Road, Boon Lay Way',
             },
             {
-                'sector': 'Sector 1',
+                'sector': 'D1R1',
                 'station': PoliceStation.objects.get(station="Clementi Neighbourhood Police Centre"),
                 'description': 'Clementi Ave 4, Clementi Ave 5, Clementi Ave 1, Clementi Ave 3',
             },
             {
-                'sector': 'Sector 2',
+                'sector': 'D1R2',
                 'station': PoliceStation.objects.get(station="Clementi Neighbourhood Police Centre"),
                 'description': 'Dover Road, Dover Avenue, Ulu Pandan Road, Holland Road',
             },
