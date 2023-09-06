@@ -1,5 +1,5 @@
 from django.db import models
-from station_diary_backend.users.models import Account, PoliceStation
+from users.models import Account, PoliceStation
 import uuid
 
 
