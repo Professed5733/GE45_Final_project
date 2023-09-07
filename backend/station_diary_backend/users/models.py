@@ -58,14 +58,15 @@ class Account(AbstractBaseUser, PermissionsMixin):
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(verbose_name='email', max_length=60, unique=True)
     full_name = models.CharField(max_length=50)
-    rank = models.ForeignKey(Rank, on_delete=models.DO_NOTHING)
-    role = models.ForeignKey(Role, on_delete=models.DO_NOTHING)
-    station = models.ForeignKey(PoliceStation, on_delete=models.DO_NOTHING)
+    rank = models.ForeignKey(Rank, on_delete=models.DO_NOTHING, null=True)
+    role = models.ForeignKey(Role, on_delete=models.DO_NOTHING, null=True)
+    station = models.ForeignKey(PoliceStation, on_delete=models.DO_NOTHING, null=True)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=True)
 
     objects = AccountManager()
 

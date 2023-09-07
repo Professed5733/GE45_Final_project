@@ -130,7 +130,7 @@ WSGI_APPLICATION = 'station_diary_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'stationdb',
+        'NAME': 'stationdb2',
         'USER': 'db_user',
         'PASSWORD': 'P@ssw0rd',
         'HOST': 'localhost',
