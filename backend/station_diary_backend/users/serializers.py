@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import Division, Rank, Role, PoliceStation
+from .models import Division, Rank, Role, PoliceStation, Account
 
 class DivisionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,3 +25,9 @@ class PoliceStationSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = '__all__'

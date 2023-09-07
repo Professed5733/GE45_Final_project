@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Rank, Role, PoliceStation, Division
+from .models import Rank, Role, PoliceStation, Division, Account
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import DivisionSerializer, RankSerializer, RoleSerializer, PoliceStationSerializer, ChangePasswordSerializer
+from .serializers import DivisionSerializer, RankSerializer, RoleSerializer, PoliceStationSerializer, ChangePasswordSerializer, AccountSerializer
 from rest_framework import status
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
+import json
 
 # Create your views here.
 
@@ -116,3 +117,40 @@ class ChangePasswordView(APIView):
             return Response({'detail': 'Password changed successfully.'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CustomFilterAPIView(APIView):
+    def post(self, request, format=None):
+        # Parse the JSON data from the request body
+        try:
+            filter_data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return Response({"error": "Invalid JSON data in the request body"}, status=400)
+
+        # Get filter criteria from the parsed JSON data
+        email_contains = filter_data.get("email_contains", "")
+        full_name_contains = filter_data.get("full_name_contains", "")
+        rank_id = filter_data.get("rank_id", None)
+        role_id = filter_data.get("role_id", None)
+        station_id = filter_data.get("station_id", None)
+
+        # Build a queryset based on the filter criteria
+        queryset = Account.objects.all()
+
+        if email_contains:
+            queryset = queryset.filter(email__icontains=email_contains)
+
+        if full_name_contains:
+            queryset = queryset.filter(full_name__icontains=full_name_contains)
+
+        if rank_id is not None:
+            queryset = queryset.filter(rank_id=rank_id)
+
+        if role_id is not None:
+            queryset = queryset.filter(role_id=role_id)
+
+        if station_id is not None:
+            queryset = queryset.filter(station_id=station_id)
+
+        # Serialize the queryset results
+        serializer = AccountSerializer(queryset, many=True)
+        return Response(serializer.data)
