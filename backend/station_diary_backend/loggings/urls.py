@@ -1,3 +1,6 @@
 from django.urls import path
+from . import views
 
-urlpatterns = []
+urlpatterns = [
+    path('seedbase/', views.seedBase.as_view(), name='seedbase'),
+]

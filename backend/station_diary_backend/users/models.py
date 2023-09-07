@@ -23,7 +23,7 @@ class Division(models.Model):
 
 class PoliceStation(models.Model):
     station = models.CharField(max_length=255, primary_key=True)
-    division = models.ForeignKey(Division, on_delete=models.CASCADE)
+    division = models.ForeignKey(Division, on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return self.station
@@ -58,9 +58,9 @@ class Account(AbstractBaseUser, PermissionsMixin):
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(verbose_name='email', max_length=60, unique=True)
     full_name = models.CharField(max_length=50)
-    rank = models.ForeignKey(Rank, on_delete=models.CASCADE)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    station = models.ForeignKey(PoliceStation, on_delete=models.CASCADE)
+    rank = models.ForeignKey(Rank, on_delete=models.DO_NOTHING)
+    role = models.ForeignKey(Role, on_delete=models.DO_NOTHING)
+    station = models.ForeignKey(PoliceStation, on_delete=models.DO_NOTHING)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     is_active = models.BooleanField(default=True)
