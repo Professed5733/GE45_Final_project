@@ -38,3 +38,14 @@ class CreateDeploymentSerializer(serializers.ModelSerializer):
             if user_id not in valid_user_ids:
                 raise serializers.ValidationError(f"Invalid user ID in 'users': {user_id}")
         return values
+
+class EditDeploymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Deployment
+        fields = '__all__'
+
+    shift = serializers.CharField(required=False)
+    sector = serializers.CharField(required=False)
+    is_active = serializers.BooleanField(required=False)
+    date = serializers.DateField(required=False)
+

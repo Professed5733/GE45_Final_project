@@ -1,10 +1,11 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import UpdateAPIView
 from rest_framework import status
 from django.shortcuts import render
-from .models import Sector, Shift
-from users.models import PoliceStation
-from .serializers import SectorSerializer, ShiftSerializer, CreateDeploymentSerializer
+from .models import Sector, Shift, Deployment
+from users.models import PoliceStation, Account
+from .serializers import SectorSerializer, ShiftSerializer, CreateDeploymentSerializer, EditDeploymentSerializer
 
 
 # Create your views here.
@@ -88,4 +89,18 @@ class CreateDeploymentView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class EditDeploymentView(APIView):
+    def post(self, request, deployment_id, format=None):
+        try:
+            deployment = Deployment.objects.get(deployment_id=deployment_id)
+        except Deployment.DoesNotExist:
+            return Response({"error": "Deployment not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = EditDeploymentSerializer(deployment, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
