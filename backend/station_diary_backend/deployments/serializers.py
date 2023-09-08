@@ -35,11 +35,14 @@ class CreateDeploymentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Invalid sector")
 
     def validate_users(self, values):
-        valid_user_ids = [str(user.user_id) for user in values]
-        for user_id in valid_user_ids:
-            if user_id not in valid_user_ids:
-                raise serializers.ValidationError(f"Invalid user ID in 'users': {user_id}")
-        return values
+        user_ids = []
+        for user_id in values:
+            try:
+                user = Account.objects.get(user_id=user_id)
+                user_ids.append(user.user_id)
+            except Account.DoesNotExist:
+                raise serializers.ValidationError(f"User with ID '{user_id}' does not exist.")
+        return user_ids
 
 
 
@@ -67,7 +70,7 @@ class EditDeploymentSerializer(serializers.ModelSerializer):
             return sector
         except Sector.DoesNotExist:
             raise serializers.ValidationError("Invalid sector")
-
+    '''
     def validate_users(self, values):
         user_ids = []
         for full_name in values:
@@ -75,8 +78,10 @@ class EditDeploymentSerializer(serializers.ModelSerializer):
                 user = Account.objects.get(full_name=full_name)
                 user_ids.append(user.user_id)
             except Account.DoesNotExist:
-                raise serializers.ValidationError(f"User with full name '{full_name}' does not exist.")
+                print("Invalid user_id: ",user_id )
+                raise serializers.ValidationError(f"User with full_name '{full_name}' does not exist.")
         return user_ids
+    '''
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

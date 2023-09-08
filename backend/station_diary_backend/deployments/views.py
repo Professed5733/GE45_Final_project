@@ -100,7 +100,14 @@ class EditDeploymentView(APIView):
 
         serializer = EditDeploymentSerializer(deployment, data=request.data, partial=True)
 
+        # Debugging statement 1: Print the request data
+        print("Request Data:", request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # Debugging statement 2: Print the serializer errors
+        print("Serializer Errors:", serializer.errors)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
