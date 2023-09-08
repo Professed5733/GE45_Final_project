@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Deployment, Sector, Shift
 from users.models import Account
-from uuid import UUID
+import uuid
 
 class SectorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,6 +17,8 @@ class CreateDeploymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Deployment
         fields = '__all__'
+
+
 
     def validate_shift(self, value):
         try:
@@ -39,13 +41,62 @@ class CreateDeploymentSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(f"Invalid user ID in 'users': {user_id}")
         return values
 
+
+
 class EditDeploymentSerializer(serializers.ModelSerializer):
+
+    users = serializers.PrimaryKeyRelatedField(
+        queryset=Account.objects.all(),
+        many=True  # Allow multiple users to be selected
+    )
+
     class Meta:
         model = Deployment
         fields = '__all__'
 
-    shift = serializers.CharField(required=False)
-    sector = serializers.CharField(required=False)
-    is_active = serializers.BooleanField(required=False)
-    date = serializers.DateField(required=False)
+    def validate_shift(self, value):
+        try:
+            shift = Shift.objects.get(shift=value)
+            return shift
+        except Shift.DoesNotExist:
+            raise serializers.ValidationError("Invalid shift")
 
+    def validate_sector(self, value):
+        try:
+            sector = Sector.objects.get(sector=value)
+            return sector
+        except Sector.DoesNotExist:
+            raise serializers.ValidationError("Invalid sector")
+
+    def validate_users(self, values):
+        user_ids = []
+        for full_name in values:
+            try:
+                user = Account.objects.get(full_name=full_name)
+                user_ids.append(user.user_id)
+            except Account.DoesNotExist:
+                raise serializers.ValidationError(f"User with full name '{full_name}' does not exist.")
+        return user_ids
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['users'] = [user.user_id for user in instance.users.all()]
+        return representation
+
+    def update(self, instance, validated_data):
+        print("validated_data_after_representation['users']: ", validated_data.get('users'))
+        print("validated_data['shift']: ", validated_data.get('shift'))
+        print("instance: ", instance)
+        # Update the instance fields with the validated data
+        for attr, value in validated_data.items():
+            if attr != 'users':  # Skip 'users' field
+                setattr(instance, attr, value)
+
+        # Update the many-to-many relationship for 'users'
+        if 'users' in validated_data:
+            instance.users.set(validated_data['users'])
+
+        # Save the updated instance
+        instance.save()
+
+        return instance

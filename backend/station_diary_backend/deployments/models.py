@@ -31,4 +31,4 @@ class Deployment(models.Model):
     date = models.DateField()
 
     def __str__(self):
-        return self.deployment_id
+        return str(self.deployment_id)
