@@ -118,38 +118,47 @@ class ChangePasswordView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CustomFilterAPIView(APIView):
-    def post(self, request, format=None):
+
+
+class GetUsersWithFilterView(APIView):
+    def get(self, request, format=None):
         # Parse the JSON data from the request body
+
         try:
             filter_data = json.loads(request.body)
         except json.JSONDecodeError:
             return Response({"error": "Invalid JSON data in the request body"}, status=400)
 
+
         # Get filter criteria from the parsed JSON data
-        email_contains = filter_data.get("email_contains", "")
-        full_name_contains = filter_data.get("full_name_contains", "")
-        rank_id = filter_data.get("rank_id", None)
-        role_id = filter_data.get("role_id", None)
-        station_id = filter_data.get("station_id", None)
+        email = filter_data.get("email", "")
+        full_name = filter_data.get("full_name", "")
+        rank = filter_data.get("rank", "")
+        role = filter_data.get("role", "")
+        station = filter_data.get("station", "")
 
         # Build a queryset based on the filter criteria
         queryset = Account.objects.all()
 
-        if email_contains:
-            queryset = queryset.filter(email__icontains=email_contains)
 
-        if full_name_contains:
-            queryset = queryset.filter(full_name__icontains=full_name_contains)
+        if email:
+            queryset = queryset.filter(email=email)
 
-        if rank_id is not None:
-            queryset = queryset.filter(rank_id=rank_id)
+        if full_name:
+            queryset = queryset.filter(full_name=full_name)
 
-        if role_id is not None:
-            queryset = queryset.filter(role_id=role_id)
+        if rank:
+            queryset = queryset.filter(rank=rank)
 
-        if station_id is not None:
-            queryset = queryset.filter(station_id=station_id)
+        if role:
+            queryset = queryset.filter(role=role)
+
+        if station:
+            queryset = queryset.filter(station=station)
+
+        # If no filter inputs are provided, return all records
+        if not filter_data:
+            queryset = Account.objects.all()
 
         # Serialize the queryset results
         serializer = AccountSerializer(queryset, many=True)
