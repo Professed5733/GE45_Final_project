@@ -4,6 +4,7 @@ from rest_framework import status
 from django.shortcuts import render
 from .models import Sector, Shift
 from users.models import PoliceStation
+from .serializers import SectorSerializer, ShiftSerializer
 
 # Create your views here.
 class seedBase(APIView):
@@ -66,3 +67,16 @@ class seedBase(APIView):
                 sector.save()
 
         return Response({"message": "Initial deployment data seeding complete"}, status=status.HTTP_201_CREATED)
+
+class DataListView(APIView):
+    def get(self, request, data_type):
+        if data_type == "sector":
+            sector = Sector.objects.all()
+            serializer = SectorSerializer(sector, many=True)
+        elif data_type == "shift":
+            shift = Shift.objects.all()
+            serializer = ShiftSerializer(shift, many=True)
+        else:
+            return Response({"error": "Invalid data type"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
