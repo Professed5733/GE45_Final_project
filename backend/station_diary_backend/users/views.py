@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
+from deployments.models import Deployment
 import json
 
 # Create your views here.
@@ -93,7 +94,27 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['role'] = user.role_id
         token['station'] = user.station_id
 
+        # Add the deployment information to the token if it exists
+        deployment_info = cls.get_deployment_info(user)
+        if deployment_info:
+            token['deployment_id'] = deployment_info['deployment_id']
+            token['shift'] = deployment_info['shift']
+            token['sector'] = deployment_info['sector']
+
         return token
+
+    @classmethod
+    def get_deployment_info(cls, user):
+        try:
+            deployment = Deployment.objects.get(users=user, is_active=True)
+            deployment_info = {
+                'deployment_id': str(deployment.deployment_id),
+                'shift': str(deployment.shift),
+                'sector': str(deployment.sector),
+            }
+            return deployment_info
+        except Deployment.DoesNotExist:
+            return None
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
