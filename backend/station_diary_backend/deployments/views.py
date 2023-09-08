@@ -4,7 +4,8 @@ from rest_framework import status
 from django.shortcuts import render
 from .models import Sector, Shift
 from users.models import PoliceStation
-from .serializers import SectorSerializer, ShiftSerializer
+from .serializers import SectorSerializer, ShiftSerializer, CreateDeploymentSerializer
+
 
 # Create your views here.
 class seedBase(APIView):
@@ -80,3 +81,11 @@ class DataListView(APIView):
             return Response({"error": "Invalid data type"}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class CreateDeploymentView(APIView):
+    def put(self, request, format=None):
+        serializer = CreateDeploymentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
