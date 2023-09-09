@@ -165,3 +165,16 @@ class GetDeploymentsWithFilterView(APIView):
         # Serialize the queryset results
         serializer = GetDeploymentSerializer(queryset, many=True)
         return Response(serializer.data)
+
+class DeleteDeployment(APIView):
+    def post(self, request, deployment_id):
+        try:
+            deployment = Deployment.objects.get(deployment_id=deployment_id)
+        except Deployment.DoesNotExist:
+            return Response({"error": "Deployment not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Set the 'is_deleted' attribute to True
+        deployment.is_deleted = True
+        deployment.save()
+
+        return Response({"message": "Deployment set as deleted"}, status=status.HTTP_200_OK)
