@@ -125,6 +125,12 @@ class GetDeploymentsWithFilterView(APIView):
         shift = filter_data.get("shift", "")
         sector = filter_data.get("sector", "")
         is_active = filter_data.get("is_active", "")
+        date = filter_data.get("date", "")
+        deployment_id = filter_data.get("deployment_id", "")
+        is_deleted = filter_data.get("is_deleted", "false")
+        users = filter_data.get("users", [])
+
+        is_deleted = is_deleted.lower() == 'true'
 
         # Build a queryset based on the filter criteria
         queryset = Deployment.objects.all()
@@ -140,9 +146,21 @@ class GetDeploymentsWithFilterView(APIView):
             is_active = is_active.lower() == 'true'
             queryset = queryset.filter(is_active=is_active)
 
+        if date:
+            queryset = queryset.filter(date=date)
+
+        if deployment_id:
+            queryset = queryset.filter(deployment_id=deployment_id)
+
+        queryset = queryset.filter(is_deleted=is_deleted)
+
+        if users:
+            # Use the '__in' filter to find deployments that include any of the specified users
+            queryset = queryset.filter(users__in=users)
+
         # If no filter inputs are provided, return all records
         if not filter_data:
-            queryset = Deployment.objects.all()
+            queryset = queryset.filter(is_deleted=False)
 
         # Serialize the queryset results
         serializer = GetDeploymentSerializer(queryset, many=True)
