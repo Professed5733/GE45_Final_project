@@ -3,8 +3,8 @@ from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .models import SubjectStatus, Tencode, PINType, ContactType
-from .serializers import TencodeSerializer, ContactTypeSerializer, PINTypeSerializer, SubjectStatusSerializer
+from .models import SubjectStatus, Tencode, PINType, ContactType, SubjectContact, Subject
+from .serializers import TencodeSerializer, ContactTypeSerializer, PINTypeSerializer, SubjectStatusSerializer, CreateSubjectSerializer
 
 # Create your views here.
 class seedBase(APIView):
@@ -87,3 +87,26 @@ class DataListView(APIView):
             return Response({"error": "Invalid data type"}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class CreateSubjectView(APIView):
+    def put(self, request, format=None):
+        serializer = CreateSubjectSerializer(data=request.data)
+        if serializer.is_valid():
+            # Extract the contacts data from the request
+            contacts_data = serializer.validated_data.pop('contacts', [])
+
+            # Create the Subject object
+            subject = Subject.objects.create(**serializer.validated_data)
+
+            # Create the associated SubjectContact objects
+            for contact_data in contacts_data:
+                contact_type_name = contact_data["contact_type"]
+                contact_type, created = ContactType.objects.get_or_create(contact_type=contact_type_name)
+                SubjectContact.objects.create(contact=contact_data["contact"], contact_type=contact_type, subject_id=subject)
+
+            # Serialize the subject and its related data
+            serialized_subject = CreateSubjectSerializer(instance=subject)
+
+            return Response(serialized_subject.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
