@@ -29,6 +29,7 @@ class Deployment(models.Model):
     users = models.ManyToManyField(Account, related_name='deployments')
     is_active = models.BooleanField(default=True)
     date = models.DateField()
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.deployment_id)

@@ -106,13 +106,14 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_deployment_info(cls, user):
         try:
-            deployment = Deployment.objects.get(users=user, is_active=True)
-            deployment_info = {
-                'deployment_id': str(deployment.deployment_id),
-                'shift': str(deployment.shift),
-                'sector': str(deployment.sector),
-            }
-            return deployment_info
+            deployment = Deployment.objects.filter(users=user, is_deleted=False, is_active=True).first()
+            if deployment:
+                deployment_info = {
+                    'deployment_id': str(deployment.deployment_id),
+                    'shift': str(deployment.shift),
+                    'sector': str(deployment.sector),
+                }
+                return deployment_info
         except Deployment.DoesNotExist:
             return None
 

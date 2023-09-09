@@ -49,11 +49,13 @@ class Logging(models.Model):
     logging_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     deployment = models.ForeignKey(Deployment, on_delete=models.DO_NOTHING)
     tencode = models.ForeignKey(Tencode, on_delete=models.DO_NOTHING)
-    time = models.TimeField()
+    log_date = models.DateField()
+    log_time = models.TimeField()
     current_location = models.CharField(max_length=255)
     destination_location = models.CharField(max_length=255)
     subject = models.ManyToManyField(Subject)
     details = models.TextField()
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.logging_id
+        return str(self.logging_id)
