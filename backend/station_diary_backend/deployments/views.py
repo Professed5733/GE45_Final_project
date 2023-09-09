@@ -5,8 +5,8 @@ from rest_framework import status
 from django.shortcuts import render
 from .models import Sector, Shift, Deployment
 from users.models import PoliceStation, Account
-from .serializers import SectorSerializer, ShiftSerializer, CreateDeploymentSerializer, EditDeploymentSerializer
-
+from .serializers import SectorSerializer, ShiftSerializer, CreateDeploymentSerializer, EditDeploymentSerializer, GetDeploymentSerializer
+import json
 
 # Create your views here.
 class seedBase(APIView):
@@ -111,3 +111,39 @@ class EditDeploymentView(APIView):
         print("Serializer Errors:", serializer.errors)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetDeploymentsWithFilterView(APIView):
+    def get(self, request, format=None):
+        # Parse the JSON data from the request body
+        try:
+            filter_data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return Response({"error": "Invalid JSON data in the request body"}, status=400)
+
+        # Get filter criteria from the parsed JSON data
+        shift = filter_data.get("shift", "")
+        sector = filter_data.get("sector", "")
+        is_active = filter_data.get("is_active", "")
+
+        # Build a queryset based on the filter criteria
+        queryset = Deployment.objects.all()
+
+        if shift:
+            queryset = queryset.filter(shift__shift=shift)
+
+        if sector:
+            queryset = queryset.filter(sector__sector=sector)
+
+        if is_active:
+            # 'true' or 'false' are passed as strings, so we need to convert them to boolean
+            is_active = is_active.lower() == 'true'
+            queryset = queryset.filter(is_active=is_active)
+
+        # If no filter inputs are provided, return all records
+        if not filter_data:
+            queryset = Deployment.objects.all()
+
+        # Serialize the queryset results
+        serializer = GetDeploymentSerializer(queryset, many=True)
+        return Response(serializer.data)

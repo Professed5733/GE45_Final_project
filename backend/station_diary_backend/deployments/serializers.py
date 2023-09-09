@@ -92,3 +92,8 @@ class EditDeploymentSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+class GetDeploymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Deployment
+        fields = '__all__'
