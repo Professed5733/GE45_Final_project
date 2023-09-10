@@ -9,4 +9,5 @@ urlpatterns = [
     path('subject-list/', views.GetSubjectsView.as_view(), name='subject-list'),
     path('log-create/', views.CreatLoggingeView.as_view(), name='log-create'),
     path('log-delete/<uuid:logging_id>/', views.DeleteLogging.as_view(), name='log-delete'),
+    path('log-get/<uuid:deployment_id>/', views.GetLoggingByDeployment.as_view(), name='log-get'),
 ]

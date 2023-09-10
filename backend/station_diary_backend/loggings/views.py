@@ -6,7 +6,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .models import SubjectStatus, Tencode, PINType, ContactType, SubjectContact, Subject, Logging
 from .serializers import (TencodeSerializer, ContactTypeSerializer, PINTypeSerializer, SubjectStatusSerializer,
-                          CreateSubjectSerializer, EditSubjectSerializer, GetSubjectListSerializer, LoggingSerializer)
+                          CreateSubjectSerializer, EditSubjectSerializer, GetSubjectListSerializer, LoggingSerializer,
+                          GetLogSerializer)
 import json
 
 # Create your views here.
@@ -206,3 +207,13 @@ class DeleteLogging(APIView):
         logging_entry.save()
 
         return Response({"message": "Logging entry set as deleted"}, status=status.HTTP_200_OK)
+
+class GetLoggingByDeployment(APIView):
+    def get(self, request, deployment_id):
+        # Retrieve all logging entries associated with the specified deployment_id
+        logging_entries = Logging.objects.filter(deployment__deployment_id=deployment_id, is_deleted=False)
+
+        # Serialize the logging entries
+        serializer = GetLogSerializer(logging_entries, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

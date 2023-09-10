@@ -83,3 +83,8 @@ class LoggingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Logging
         exclude = ['is_deleted']
+
+class GetLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Logging
+        fields = '__all__'
