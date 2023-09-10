@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from .models import SubjectStatus, Tencode, PINType, ContactType, SubjectContact, Subject
-from .serializers import TencodeSerializer, ContactTypeSerializer, PINTypeSerializer, SubjectStatusSerializer, CreateSubjectSerializer
+from .serializers import TencodeSerializer, ContactTypeSerializer, PINTypeSerializer, SubjectStatusSerializer, CreateSubjectSerializer, EditSubjectSerializer
 
 # Create your views here.
 class seedBase(APIView):
@@ -109,4 +109,38 @@ class CreateSubjectView(APIView):
 
             return Response(serialized_subject.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EditSubjectView(APIView):
+    def post(self, request, subject_id, format=None):
+        try:
+            subject = Subject.objects.get(subject_id=subject_id)
+        except Subject.DoesNotExist:
+            return Response({"error": "Subject not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = EditSubjectSerializer(subject, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            # Extract the contacts data from the request
+            contacts_data = serializer.validated_data.pop('contacts', [])
+
+            # Update the Subject object
+            serializer.update(subject, serializer.validated_data)
+
+            # Create or update the associated SubjectContact objects
+            for contact_data in contacts_data:
+                contact_type_name = contact_data["contact_type"]
+                contact_type, created = ContactType.objects.get_or_create(contact_type=contact_type_name)
+                subject_contact, created = SubjectContact.objects.get_or_create(
+                    contact=contact_data["contact"],
+                    contact_type=contact_type,
+                    subject_id=subject
+                )
+
+            # Serialize the subject and its related data
+            serialized_subject = EditSubjectSerializer(instance=subject)
+
+            return Response(serialized_subject.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 

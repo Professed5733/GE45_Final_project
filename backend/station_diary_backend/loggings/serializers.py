@@ -53,5 +53,24 @@ class CreateSubjectSerializer(serializers.ModelSerializer):
         serialized_contacts = SubjectContactSerializer(contacts, many=True).data
         return serialized_contacts
 
+class EditSubjectSerializer(serializers.ModelSerializer):
+    contacts = SubjectContactSerializer(many=True, required=False)
+
+    class Meta:
+        model = Subject
+        fields = '__all__'
+
+    PIN = serializers.CharField(required=False)
+    details = serializers.CharField(required=False)
+    PIN_type = serializers.PrimaryKeyRelatedField(queryset=PINType.objects.all(), required=False)
+    subject_status = serializers.PrimaryKeyRelatedField(queryset=SubjectStatus.objects.all(), required=False)
+
+    contact_details = serializers.SerializerMethodField()
+
+    def get_contact_details(self, obj):
+        contacts = SubjectContact.objects.filter(subject_id=obj)
+        serialized_contacts = SubjectContactSerializer(contacts, many=True).data
+        return serialized_contacts
+
 
 

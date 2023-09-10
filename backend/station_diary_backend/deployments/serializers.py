@@ -76,9 +76,6 @@ class EditDeploymentSerializer(serializers.ModelSerializer):
         return representation
 
     def update(self, instance, validated_data):
-        print("validated_data_after_representation['users']: ", validated_data.get('users'))
-        print("validated_data['shift']: ", validated_data.get('shift'))
-        print("instance: ", instance)
         # Update the instance fields with the validated data
         for attr, value in validated_data.items():
             if attr != 'users':  # Skip 'users' field
