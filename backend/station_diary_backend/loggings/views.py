@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from .models import SubjectStatus, Tencode, PINType, ContactType, SubjectContact, Subject
-from .serializers import TencodeSerializer, ContactTypeSerializer, PINTypeSerializer, SubjectStatusSerializer, CreateSubjectSerializer, EditSubjectSerializer
+from .serializers import (TencodeSerializer, ContactTypeSerializer, PINTypeSerializer, SubjectStatusSerializer,
+                          CreateSubjectSerializer, EditSubjectSerializer, GetSubjectListSerializer)
+import json
 
 # Create your views here.
 class seedBase(APIView):
@@ -143,4 +146,41 @@ class EditSubjectView(APIView):
             return Response(serialized_subject.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class GetSubjectsView(generics.ListAPIView):
+    serializer_class = GetSubjectListSerializer
 
+    def get_queryset(self):
+        # Parse the JSON data from the request body
+        try:
+            filter_data = json.loads(self.request.body)
+        except json.JSONDecodeError:
+            filter_data = {}
+
+        # Get filter criteria from the parsed JSON data
+        name = filter_data.get("name", "")
+        PIN = filter_data.get("PIN", "")
+        contact = filter_data.get("contact", "")
+
+        # Build a queryset based on the filter criteria
+        queryset = Subject.objects.all()
+
+        if name:
+            queryset = queryset.filter(name__icontains=name)
+
+        if PIN:
+            queryset = queryset.filter(PIN=PIN)
+
+        # Assuming SubjectContact has a ForeignKey relationship to Subject
+        if contact:
+            queryset = queryset.filter(subjectcontact__contact__icontains=contact)
+
+        # If no filter inputs are provided, return all records
+        if not filter_data:
+            queryset = queryset.all()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = GetSubjectListSerializer(queryset, many=True)
+        return Response(serializer.data)

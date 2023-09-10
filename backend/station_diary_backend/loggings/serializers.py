@@ -72,5 +72,9 @@ class EditSubjectSerializer(serializers.ModelSerializer):
         serialized_contacts = SubjectContactSerializer(contacts, many=True).data
         return serialized_contacts
 
+class GetSubjectListSerializer(serializers.ModelSerializer):
+    contact_details = SubjectContactSerializer(many=True, source='subjectcontact_set')
 
-
+    class Meta:
+        model = Subject
+        fields = '__all__'
