@@ -4,9 +4,9 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .models import SubjectStatus, Tencode, PINType, ContactType, SubjectContact, Subject
+from .models import SubjectStatus, Tencode, PINType, ContactType, SubjectContact, Subject, Logging
 from .serializers import (TencodeSerializer, ContactTypeSerializer, PINTypeSerializer, SubjectStatusSerializer,
-                          CreateSubjectSerializer, EditSubjectSerializer, GetSubjectListSerializer)
+                          CreateSubjectSerializer, EditSubjectSerializer, GetSubjectListSerializer, LoggingSerializer)
 import json
 
 # Create your views here.
@@ -184,3 +184,25 @@ class GetSubjectsView(generics.ListAPIView):
         queryset = self.get_queryset()
         serializer = GetSubjectListSerializer(queryset, many=True)
         return Response(serializer.data)
+
+class CreatLoggingeView(APIView):
+
+    def put(self, request, format=None):
+        serializer = LoggingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteLogging(APIView):
+    def post(self, request, logging_id):
+        try:
+            logging_entry = Logging.objects.get(logging_id=logging_id)
+        except Logging.DoesNotExist:
+            return Response({"error": "Logging entry not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Set the 'is_deleted' attribute to True
+        logging_entry.is_deleted = True
+        logging_entry.save()
+
+        return Response({"message": "Logging entry set as deleted"}, status=status.HTTP_200_OK)

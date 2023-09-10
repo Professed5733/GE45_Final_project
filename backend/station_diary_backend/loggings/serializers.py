@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import Tencode, PINType, ContactType, SubjectStatus, Subject, SubjectContact
+from .models import Tencode, PINType, ContactType, SubjectStatus, Subject, SubjectContact, Logging
 
 class TencodeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -78,3 +78,8 @@ class GetSubjectListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
         fields = '__all__'
+
+class LoggingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Logging
+        exclude = ['is_deleted']
