@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import UserContext from "../context/user";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -18,6 +19,8 @@ const Navbar = (props) => {
   const { setSelectedComponent } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const { full_name, rank } = useContext(UserContext);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -50,34 +53,9 @@ const Navbar = (props) => {
           </Typography>
 
           <div>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-            </Menu>
+            <Typography variant="h6" component="div">
+              Welcome {rank} {full_name}
+            </Typography>
           </div>
         </Toolbar>
       </AppBar>

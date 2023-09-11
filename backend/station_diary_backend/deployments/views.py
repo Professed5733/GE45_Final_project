@@ -108,7 +108,7 @@ class EditDeploymentView(APIView):
 
 
 class GetDeploymentsWithFilterView(APIView):
-    def get(self, request, format=None):
+    def post(self, request, format=None):
         # Parse the JSON data from the request body
         try:
             filter_data = json.loads(request.body)
