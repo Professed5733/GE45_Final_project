@@ -11,15 +11,23 @@ import Typography from "@mui/material/Typography";
 import UserContext from "../context/user";
 import useFetch from "../hooks/useFetch";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
 const SelectUser = (props) => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
   const [selectedIds, setSelectedIds] = useState([]);
   const [displayUsers, setDisplayUsers] = useState([]);
+  const [filter, setFilter] = useState({
+    email: "",
+    full_name: "",
+    rank: "",
+    role: "",
+    station: "",
+  });
 
   const getUsers = async () => {
-    const res = await fetchData("users/data-users/", "POST", {}, undefined);
+    const res = await fetchData("users/data-users/", "POST", filter, undefined);
 
     if (res.ok) {
       setDisplayUsers(res.data);
@@ -35,7 +43,7 @@ const SelectUser = (props) => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelectedIds = users.map((user) => user.user_id);
+      const newSelectedIds = displayUsers.map((user) => user.user_id); // Use displayUsers here
       setSelectedIds(newSelectedIds);
     } else {
       setSelectedIds([]);
@@ -64,9 +72,67 @@ const SelectUser = (props) => {
 
   const isSelected = (user_id) => selectedIds.indexOf(user_id) !== -1;
 
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      [name]: value,
+    }));
+  };
+
   return (
     <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
       <Typography variant="h5">User Table</Typography>
+      <div>
+        <TextField
+          label="Email"
+          name="email"
+          value={filter.email}
+          onChange={handleFilterChange}
+          variant="outlined"
+          margin="dense"
+        />
+        <TextField
+          label="Full Name"
+          name="full_name"
+          value={filter.full_name}
+          onChange={handleFilterChange}
+          variant="outlined"
+          margin="dense"
+        />
+        <TextField
+          label="Rank"
+          name="rank"
+          value={filter.rank}
+          onChange={handleFilterChange}
+          variant="outlined"
+          margin="dense"
+        />
+        <TextField
+          label="Role"
+          name="role"
+          value={filter.role}
+          onChange={handleFilterChange}
+          variant="outlined"
+          margin="dense"
+        />
+        <TextField
+          label="Station"
+          name="station"
+          value={filter.station}
+          onChange={handleFilterChange}
+          variant="outlined"
+          margin="dense"
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={getUsers}
+          style={{ marginLeft: "10px" }}
+        >
+          Filter
+        </Button>
+      </div>
       <TableContainer>
         <Table>
           <TableHead>
