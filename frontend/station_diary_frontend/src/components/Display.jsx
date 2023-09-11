@@ -4,6 +4,8 @@ import Navbar from "./Navbar";
 import Dashboard from "./Dashboard";
 import Deployment from "./Deployment";
 import Logsheet from "./Logsheet";
+import CreateDeployment from "./CreateDeployment";
+import SelectUser from "./SelectUser";
 
 const Display = () => {
   const [selectedComponent, setSelectedComponent] = useState("Dashboard");
@@ -16,6 +18,10 @@ const Display = () => {
         return <Deployment />;
       case "Logsheet":
         return <Logsheet />;
+      case "CreateDeployment":
+        return <CreateDeployment />;
+      case "SelectUser":
+        return <SelectUser />;
       default:
         return null;
     }
