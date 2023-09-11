@@ -1,7 +1,13 @@
 import React from "react";
+import Navbar from "./Navbar";
 
 const Display = () => {
-  return <>Display Component</>;
+  return (
+    <>
+      <Navbar />
+      Display Component
+    </>
+  );
 };
 
 export default Display;

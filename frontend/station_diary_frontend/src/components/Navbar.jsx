@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,9 +12,11 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import CustomDrawer from "./CustomDrawer";
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -23,9 +26,13 @@ const Navbar = () => {
     setAnchorEl(null);
   };
 
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ bgcolor: "#080d4e" }}>
         <Toolbar>
           <IconButton
             size="large"
@@ -33,11 +40,12 @@ const Navbar = () => {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            onClick={toggleDrawer}
           >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Photos
+            Station Diary App
           </Typography>
 
           <div>
@@ -72,6 +80,7 @@ const Navbar = () => {
           </div>
         </Toolbar>
       </AppBar>
+      <CustomDrawer open={isDrawerOpen} onClose={toggleDrawer} />
     </Box>
   );
 };
