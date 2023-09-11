@@ -3,7 +3,7 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import Button from "@mui/material/Button";
+import ListItemButton from "@mui/material/ListItemButton";
 
 const CustomDrawer = (props) => {
   const { open, onClose } = props;
@@ -11,18 +11,15 @@ const CustomDrawer = (props) => {
     <Drawer anchor="left" open={open} onClose={onClose}>
       <List>
         {/* Add your Drawer content here */}
-        <ListItem>
-          {/* Wrap ListItemText in a Button */}
-          <Button onClick={onClose} fullWidth>
-            <ListItemText primary="Item 1" />
-          </Button>
-        </ListItem>
-        <ListItem>
-          {/* Wrap ListItemText in a Button */}
-          <Button onClick={onClose} fullWidth>
-            <ListItemText primary="Item 2" />
-          </Button>
-        </ListItem>
+        <ListItemButton onClick={onClose}>
+          <ListItemText primary="Dashboard" />
+        </ListItemButton>
+        <ListItemButton onClick={onClose}>
+          <ListItemText primary="Deployment" />
+        </ListItemButton>
+        <ListItemButton onClick={onClose}>
+          <ListItemText primary="Logsheet" />
+        </ListItemButton>
       </List>
     </Drawer>
   );
