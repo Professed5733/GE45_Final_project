@@ -3,7 +3,8 @@ from django.http import HttpResponse
 from .models import Rank, Role, PoliceStation, Division, Account
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import DivisionSerializer, RankSerializer, RoleSerializer, PoliceStationSerializer, ChangePasswordSerializer, AccountSerializer
+from .serializers import (DivisionSerializer, RankSerializer, RoleSerializer, PoliceStationSerializer,
+                          ChangePasswordSerializer, AccountSerializer, GetUserNamesSerializer)
 from rest_framework import status
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -185,3 +186,27 @@ class GetUsersWithFilterView(APIView):
         # Serialize the queryset results
         serializer = AccountSerializer(queryset, many=True)
         return Response(serializer.data)
+
+class GetUserNamesView(APIView):
+    def post(self, request, format=None):
+        serializer = GetUserNamesSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user_ids = serializer.validated_data['user_ids']
+
+            # Fetch user names based on user_ids
+            user_names = {}  # Dictionary to store user IDs as keys and names as values
+
+            try:
+                users = Account.objects.filter(user_id__in=user_ids)  # Fetch users with matching IDs
+
+                # Iterate over the users and add their IDs and names to the dictionary
+                for user in users:
+                    user_names[str(user.user_id)] = user.full_name
+
+            except Account.DoesNotExist:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            return Response(user_names, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

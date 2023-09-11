@@ -31,3 +31,6 @@ class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ('user_id', 'email', 'full_name', 'is_active', 'is_admin', 'is_staff', 'rank', 'role', 'station')
+
+class GetUserNamesSerializer(serializers.Serializer):
+    user_ids = serializers.ListField(child=serializers.UUIDField())

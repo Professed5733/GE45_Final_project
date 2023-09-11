@@ -16,10 +16,11 @@ const Deployment = () => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
   const [deployments, setDeployments] = useState([]);
+  const [userNames, setUserNames] = useState({});
 
   const getDeployments = async () => {
     const res = await fetchData(
-      "/deployments/data-deployment/",
+      "deployments/data-deployment/",
       "POST",
       {},
       undefined
@@ -27,6 +28,28 @@ const Deployment = () => {
 
     if (res.ok) {
       setDeployments(res.data);
+      const userIds = res.data.map((deployment) => deployment.users).flat();
+      fetchUserNames(userIds);
+    } else {
+      alert(JSON.stringify(res.data));
+      console.log(res.data);
+    }
+  };
+
+  const fetchUserNames = async (userIds) => {
+    if (userIds.length === 0) {
+      return;
+    }
+
+    const res = await fetchData(
+      "users/data-name/",
+      "POST",
+      { user_ids: userIds },
+      undefined
+    );
+
+    if (res.ok) {
+      setUserNames(res.data);
     } else {
       alert(JSON.stringify(res.data));
       console.log(res.data);
@@ -36,6 +59,18 @@ const Deployment = () => {
   useEffect(() => {
     getDeployments();
   }, []);
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0); // Reset to the first page when changing the number of rows per page
+  };
 
   return (
     <div style={{ marginLeft: "20px" }}>
@@ -54,23 +89,40 @@ const Deployment = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {deployments.map((deployment) => (
-              <TableRow key={deployment.deployment_id}>
-                <TableCell>{deployment.date}</TableCell>
-                <TableCell>{deployment.sector}</TableCell>
-                <TableCell>{deployment.shift}</TableCell>
-                <TableCell>{deployment.is_active ? "true" : "false"}</TableCell>
-                <TableCell>{deployment.users}</TableCell>
-                <TableCell>
-                  <Button>Update</Button>
-                </TableCell>
-                <TableCell>
-                  <Button>Delete</Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {deployments
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((deployment) => (
+                <TableRow key={deployment.deployment_id}>
+                  <TableCell>{deployment.date}</TableCell>
+                  <TableCell>{deployment.sector}</TableCell>
+                  <TableCell>{deployment.shift}</TableCell>
+                  <TableCell>
+                    {deployment.is_active ? "true" : "false"}
+                  </TableCell>
+                  <TableCell>
+                    {deployment.users
+                      .map((userId) => userNames[userId])
+                      .join(", ")}
+                  </TableCell>
+                  <TableCell>
+                    <Button>Update</Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button>Delete</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50]} // Customize the available options
+          component="div"
+          count={deployments.length} // Total number of rows
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Container>
     </div>
   );
