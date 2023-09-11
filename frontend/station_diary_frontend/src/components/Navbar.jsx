@@ -14,7 +14,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import CustomDrawer from "./CustomDrawer";
 
-const Navbar = () => {
+const Navbar = (props) => {
+  const { setSelectedComponent } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -80,7 +81,11 @@ const Navbar = () => {
           </div>
         </Toolbar>
       </AppBar>
-      <CustomDrawer open={isDrawerOpen} onClose={toggleDrawer} />
+      <CustomDrawer
+        open={isDrawerOpen}
+        onClose={toggleDrawer}
+        setSelectedComponent={setSelectedComponent}
+      />
     </Box>
   );
 };
