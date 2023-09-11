@@ -73,7 +73,7 @@ const Deployment = () => {
   };
 
   return (
-    <div style={{ marginLeft: "20px" }}>
+    <div style={{ marginLeft: "20px", overflow: "auto" }}>
       <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
         <Typography variant="h5">Deployment</Typography>
         <Table>
