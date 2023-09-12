@@ -138,7 +138,7 @@ const SelectUser = (props) => {
 
   return (
     <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
-      <Typography variant="h5">User Table</Typography>
+      <Typography variant="h5">Select Officers</Typography>
       <div>
         <TextField
           label="Email"
