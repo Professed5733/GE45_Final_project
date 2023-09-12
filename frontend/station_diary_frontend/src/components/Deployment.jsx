@@ -6,6 +6,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -15,6 +16,11 @@ import CreateDeployment from "./CreateDeployment";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import EditDeployment from "./EditDeployment";
+import {
+  descendingComparator,
+  getComparator,
+  stableSort,
+} from "../utilities/tableSorting";
 
 const Deployment = () => {
   const userCtx = useContext(UserContext);
@@ -26,6 +32,9 @@ const Deployment = () => {
   const [openEditDeployment, setOpenEditDeployment] = useState(false);
 
   const [selectedDeployment, setSelectedDeployment] = useState(null);
+
+  const [orderBy, setOrderBy] = useState("date"); // Default sorting by "Date"
+  const [order, setOrder] = useState("asc"); // Default sorting order
 
   const handleOpenCreateDeployment = () => {
     setOpenCreateDeployment(true);
@@ -115,6 +124,28 @@ const Deployment = () => {
     }
   };
 
+  const handleSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
+
+  function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+
+  function getComparator(order, orderBy) {
+    return order === "desc"
+      ? (a, b) => descendingComparator(a, b, orderBy)
+      : (a, b) => -descendingComparator(a, b, orderBy);
+  }
+
   return (
     <div style={{ marginLeft: "20px", overflow: "auto" }}>
       <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
@@ -125,8 +156,25 @@ const Deployment = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Sector</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === "date"}
+                  direction={orderBy === "date" ? order : "asc"}
+                  onClick={() => handleSort("date")} // Sort by "Date" column
+                >
+                  Date
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === "sector"}
+                  direction={orderBy === "sector" ? order : "asc"}
+                  onClick={() => handleSort("sector")} // Sort by "Sector" column
+                >
+                  Sector
+                </TableSortLabel>
+              </TableCell>
+              {/* Add more columns here with TableSortLabel */}
               <TableCell>Shift</TableCell>
               <TableCell>Active</TableCell>
               <TableCell>Officers</TableCell>
@@ -135,7 +183,7 @@ const Deployment = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {deployments
+            {stableSort(deployments, getComparator(order, orderBy))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((deployment) => (
                 <TableRow key={deployment.deployment_id}>
