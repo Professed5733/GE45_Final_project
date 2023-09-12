@@ -98,6 +98,23 @@ const Deployment = () => {
     setPage(0); // Reset to the first page when changing the number of rows per page
   };
 
+  const handleDeleteDeployment = async (deploymentId) => {
+    const res = await fetchData(
+      "deployments/delete/" + deploymentId + "/",
+      "POST",
+      undefined,
+      undefined
+    );
+
+    if (res.ok) {
+      console.log(res.data);
+      getDeployments();
+    } else {
+      alert(JSON.stringify(res.data));
+      console.log(res.data);
+    }
+  };
+
   return (
     <div style={{ marginLeft: "20px", overflow: "auto" }}>
       <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
@@ -141,7 +158,13 @@ const Deployment = () => {
                     </Button>
                   </TableCell>
                   <TableCell>
-                    <Button>Delete</Button>
+                    <Button
+                      onClick={() =>
+                        handleDeleteDeployment(deployment.deployment_id)
+                      }
+                    >
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
