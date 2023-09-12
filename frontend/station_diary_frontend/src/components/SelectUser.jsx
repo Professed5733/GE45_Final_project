@@ -12,6 +12,7 @@ import UserContext from "../context/user";
 import useFetch from "../hooks/useFetch";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 
 const SelectUser = (props) => {
   const userCtx = useContext(UserContext);
@@ -26,6 +27,10 @@ const SelectUser = (props) => {
     station: "",
   });
 
+  const [roleOptions, setRoleOptions] = useState([]);
+  const [stationOptions, setStationOptions] = useState([]);
+  const [rankOptions, setRankOptions] = useState([]);
+
   const getUsers = async () => {
     const res = await fetchData("users/data-users/", "POST", filter, undefined);
 
@@ -37,8 +42,59 @@ const SelectUser = (props) => {
     }
   };
 
+  const getRoleOptions = async () => {
+    const res = await fetchData(
+      "users/data-list/roles/",
+      "GET",
+      undefined,
+      undefined
+    );
+
+    if (res.ok) {
+      setRoleOptions(res.data);
+    } else {
+      alert(JSON.stringify(res.data));
+    }
+  };
+
+  const getRankOptions = async () => {
+    const res = await fetchData(
+      "users/data-list/ranks/",
+      "GET",
+      undefined,
+      undefined
+    );
+
+    if (res.ok) {
+      setRankOptions(res.data);
+    } else {
+      alert(JSON.stringify(res.data));
+    }
+  };
+
+  const getStationOptions = async () => {
+    const res = await fetchData(
+      "users/data-list/stations/",
+      "GET",
+      undefined,
+      undefined
+    );
+
+    if (res.ok) {
+      const extractedStations = res.data.map(
+        (stationData) => stationData.station
+      );
+      setStationOptions(extractedStations);
+    } else {
+      alert(JSON.stringify(res.data));
+    }
+  };
+
   useEffect(() => {
     getUsers();
+    getRoleOptions();
+    getStationOptions();
+    getRankOptions();
   }, []);
 
   const handleSelectAllClick = (event) => {
@@ -101,29 +157,59 @@ const SelectUser = (props) => {
           margin="dense"
         />
         <TextField
+          select
           label="Rank"
           name="rank"
           value={filter.rank}
           onChange={handleFilterChange}
           variant="outlined"
           margin="dense"
-        />
+          sx={{ minWidth: "150px" }}
+        >
+          {" "}
+          <MenuItem value="">None</MenuItem>
+          {rankOptions.map((option) => (
+            <MenuItem key={option.rank} value={option.rank}>
+              {option.rank}
+            </MenuItem>
+          ))}
+        </TextField>
         <TextField
+          select
           label="Role"
           name="role"
           value={filter.role}
           onChange={handleFilterChange}
           variant="outlined"
           margin="dense"
-        />
+          sx={{ minWidth: "150px" }}
+        >
+          {" "}
+          <MenuItem value="">None</MenuItem>
+          {roleOptions.map((option) => (
+            <MenuItem key={option.role} value={option.role}>
+              {option.role}
+            </MenuItem>
+          ))}
+        </TextField>
         <TextField
+          select
           label="Station"
           name="station"
           value={filter.station}
           onChange={handleFilterChange}
           variant="outlined"
           margin="dense"
-        />
+          sx={{ minWidth: "150px" }}
+        >
+          {" "}
+          <MenuItem value="">None</MenuItem>
+          {stationOptions.map((station) => (
+            <MenuItem key={station} value={station}>
+              {station}
+            </MenuItem>
+          ))}
+        </TextField>
         <Button
           variant="contained"
           color="primary"
