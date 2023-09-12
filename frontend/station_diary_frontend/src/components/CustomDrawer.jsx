@@ -19,14 +19,14 @@ const CustomDrawer = (props) => {
         <ListItemButton onClick={() => handleDrawerItemClick("Dashboard")}>
           <ListItemText primary="Dashboard" />
         </ListItemButton>
-        <ListItemButton
+        {/* <ListItemButton
           onClick={() => handleDrawerItemClick("CreateDeployment")}
         >
           <ListItemText primary="Create Deployment" />
         </ListItemButton>
         <ListItemButton onClick={() => handleDrawerItemClick("SelectUser")}>
           <ListItemText primary="Select User" />
-        </ListItemButton>
+        </ListItemButton> */}
         <ListItemButton onClick={() => handleDrawerItemClick("Deployment")}>
           <ListItemText primary="Deployment" />
         </ListItemButton>
