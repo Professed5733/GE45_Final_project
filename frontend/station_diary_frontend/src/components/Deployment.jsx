@@ -11,12 +11,38 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import UserContext from "../context/user";
 import useFetch from "../hooks/useFetch";
+import CreateDeployment from "./CreateDeployment";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import EditDeployment from "./EditDeployment";
 
 const Deployment = () => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
   const [deployments, setDeployments] = useState([]);
   const [userNames, setUserNames] = useState({});
+
+  const [openCreateDeployment, setOpenCreateDeployment] = useState(false);
+  const [openEditDeployment, setOpenEditDeployment] = useState(false);
+
+  const [selectedDeployment, setSelectedDeployment] = useState(null);
+
+  const handleOpenCreateDeployment = () => {
+    setOpenCreateDeployment(true);
+  };
+
+  const handleCloseCreateDeployment = () => {
+    setOpenCreateDeployment(false);
+  };
+
+  const handleOpenEditDeployment = (deployment) => {
+    setSelectedDeployment(deployment);
+    setOpenEditDeployment(true);
+  };
+
+  const handleCloseEditDeployment = () => {
+    setOpenEditDeployment(false);
+  };
 
   const getDeployments = async () => {
     const res = await fetchData(
@@ -76,6 +102,9 @@ const Deployment = () => {
     <div style={{ marginLeft: "20px", overflow: "auto" }}>
       <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
         <Typography variant="h5">Deployment</Typography>
+        <Button variant="outlined" onClick={handleOpenCreateDeployment}>
+          Create Deployment
+        </Button>
         <Table>
           <TableHead>
             <TableRow>
@@ -105,7 +134,11 @@ const Deployment = () => {
                       .join(", ")}
                   </TableCell>
                   <TableCell>
-                    <Button>Update</Button>
+                    <Button
+                      onClick={() => handleOpenEditDeployment(deployment)}
+                    >
+                      Update
+                    </Button>
                   </TableCell>
                   <TableCell>
                     <Button>Delete</Button>
@@ -124,6 +157,35 @@ const Deployment = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Container>
+
+      <Dialog
+        open={openCreateDeployment}
+        onClose={handleCloseCreateDeployment}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogContent>
+          <CreateDeployment
+            handleCloseCreateDeployment={handleCloseCreateDeployment}
+            getDeployments={getDeployments}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={openEditDeployment}
+        onClose={handleCloseEditDeployment}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogContent>
+          <EditDeployment
+            deployment={selectedDeployment}
+            handleCloseEditDeployment={handleCloseEditDeployment}
+            getDeployments={getDeployments}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -11,23 +11,23 @@ import UserContext from "../context/user";
 import useFetch from "../hooks/useFetch";
 import SelectUser from "./SelectUser";
 
-const CreateDeployment = (props) => {
+const EditDeployment = (props) => {
+  const { handleCloseEditDeployment, deployment, getDeployments } = props;
+
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
   const [formData, setFormData] = useState({
-    date: "",
-    sector: "",
-    shift: "",
-    is_active: false,
-    users: [],
+    date: deployment.date || "",
+    sector: deployment.sector || "",
+    shift: deployment.shift || "",
+    is_active: deployment.is_active || false,
+    users: deployment.users || [],
   });
 
   const [sectorOptions, setSectorOptions] = useState([]);
   const [shiftOptions, setShiftOptions] = useState([]);
   const [showSelectUser, setShowSelectUser] = useState(false); // Flag to control the visibility of SelectUser
   const [selectedUserIds, setSelectedUserIds] = useState([]); // Store selected user IDs from SelectUser
-
-  const { handleCloseCreateDeployment, getDeployments } = props;
 
   const getSectorOptions = async () => {
     const res = await fetchData(
@@ -98,8 +98,8 @@ const CreateDeployment = (props) => {
 
     // You can send the formData to your server here
     const res = await fetchData(
-      "deployments/create/",
-      "PUT",
+      "deployments/edit/" + deployment.deployment_id + "/",
+      "POST",
       formData,
       undefined
     );
@@ -107,7 +107,7 @@ const CreateDeployment = (props) => {
     if (res.ok) {
       console.log(res.data);
       getDeployments();
-      handleCloseCreateDeployment();
+      handleCloseEditDeployment();
     } else {
       alert(JSON.stringify(res.data));
       console.log(res.data);
@@ -116,7 +116,7 @@ const CreateDeployment = (props) => {
 
   return (
     <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
-      <Typography variant="h5">Create Deployment</Typography>
+      <Typography variant="h5">Edit Deployment</Typography>
       <form onSubmit={handleSubmit}>
         {/* Render form fields here */}
         <TextField
@@ -193,10 +193,10 @@ const CreateDeployment = (props) => {
         <Button type="submit" variant="contained" color="primary">
           Submit
         </Button>
-        <Button onClick={handleCloseCreateDeployment}>Cancel</Button>
+        <Button onClick={handleCloseEditDeployment}>Cancel</Button>
       </form>
     </Container>
   );
 };
 
-export default CreateDeployment;
+export default EditDeployment;
