@@ -136,6 +136,11 @@ const SelectUser = (props) => {
     }));
   };
 
+  const handleSelectButtonClick = () => {
+    // Call the callback function provided by the parent component (CreateDeployment)
+    props.onSelectUsers(selectedIds);
+  };
+
   return (
     <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
       <Typography variant="h5">Select Officers</Typography>
@@ -275,7 +280,7 @@ const SelectUser = (props) => {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => onSelect(selectedIds)}
+        onClick={handleSelectButtonClick}
       >
         Select
       </Button>

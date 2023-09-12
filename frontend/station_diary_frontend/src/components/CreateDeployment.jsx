@@ -9,6 +9,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import UserContext from "../context/user";
 import useFetch from "../hooks/useFetch";
+import SelectUser from "./SelectUser";
 
 const CreateDeployment = () => {
   const userCtx = useContext(UserContext);
@@ -17,12 +18,14 @@ const CreateDeployment = () => {
     date: "",
     sector: "",
     shift: "",
-    active: false,
-    officers: "",
+    is_active: false,
+    users: [],
   });
 
   const [sectorOptions, setSectorOptions] = useState([]);
   const [shiftOptions, setShiftOptions] = useState([]);
+  const [showSelectUser, setShowSelectUser] = useState(false); // Flag to control the visibility of SelectUser
+  const [selectedUserIds, setSelectedUserIds] = useState([]); // Store selected user IDs from SelectUser
 
   const getSectorOptions = async () => {
     const res = await fetchData(
@@ -71,6 +74,29 @@ const CreateDeployment = () => {
     });
   };
 
+  const handleSelectUserClick = () => {
+    setShowSelectUser(true);
+  };
+
+  const handleSelectUsers = (selectedIds) => {
+    setSelectedUserIds(selectedIds);
+
+    //     const usersField = selectedIds.join(", ");
+    //     setFormData({
+    //       ...formData,
+    //       users: [usersField],
+    //     });
+    //     setShowSelectUser(false);
+    //   };
+
+    setFormData({
+      ...formData,
+      users: selectedIds, // Send the selectedIds array directly
+    });
+
+    setShowSelectUser(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission here
@@ -78,17 +104,17 @@ const CreateDeployment = () => {
 
     // You can send the formData to your server here
     const res = await fetchData(
-      "your-api-endpoint",
-      "POST",
+      "deployments/create/",
+      "PUT",
       formData,
       undefined
     );
 
     if (res.ok) {
-      // Handle success
+      console.log(res.data);
     } else {
-      // Handle error
       alert(JSON.stringify(res.data));
+      console.log(res.data);
     }
   };
 
@@ -144,8 +170,8 @@ const CreateDeployment = () => {
         <FormControlLabel
           control={
             <Checkbox
-              name="active"
-              checked={formData.active}
+              name="is_active"
+              checked={formData.is_active}
               onChange={handleChange}
             />
           }
@@ -155,12 +181,19 @@ const CreateDeployment = () => {
           type="text"
           label="Officers"
           name="officers"
-          value={formData.officers}
+          value={formData.users}
           onChange={handleChange}
+          onClick={handleSelectUserClick}
           required
           fullWidth
           margin="normal"
         />
+        {showSelectUser && (
+          <SelectUser
+            onSelectUsers={handleSelectUsers} // Pass callback to SelectUser
+            selectedUserIds={selectedUserIds} // Pass selected user IDs
+          />
+        )}
         <Button type="submit" variant="contained" color="primary">
           Submit
         </Button>

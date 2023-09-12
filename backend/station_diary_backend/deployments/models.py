@@ -27,7 +27,7 @@ class Deployment(models.Model):
     shift = models.ForeignKey(Shift, on_delete=models.DO_NOTHING)
     sector = models.ForeignKey(Sector, on_delete=models.DO_NOTHING)
     users = models.ManyToManyField(Account, related_name='deployments')
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     date = models.DateField()
     is_deleted = models.BooleanField(default=False)
 
