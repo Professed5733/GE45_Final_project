@@ -4,7 +4,7 @@ import LogSheetTable from "./LogSheetTable";
 
 const Logsheet = () => {
   const userCtx = useContext(UserContext);
-  const deployment_id = userCtx.deployment_id;
+  const { deployment_id = "" } = userCtx;
 
   return (
     <div style={{ marginLeft: "20px", overflow: "auto" }}>
