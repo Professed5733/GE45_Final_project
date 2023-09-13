@@ -57,7 +57,7 @@ const LogSheetTable = () => {
     setOpenCreateDeployment(true);
   };
 
-  const handleCloseCreateDeployment = () => {
+  const handleCloseCreateLogEntry = () => {
     setOpenCreateDeployment(false);
   };
 
@@ -149,12 +149,15 @@ const LogSheetTable = () => {
 
       <Dialog
         open={openCreateDeployment}
-        onClose={handleCloseCreateDeployment}
+        onClose={handleCloseCreateLogEntry}
         maxWidth="md"
         fullWidth
       >
         <DialogContent>
-          <NewLogEntry />
+          <NewLogEntry
+            handleCloseCreateLogEntry={handleCloseCreateLogEntry}
+            getLogEntries={getLogEntries}
+          />
         </DialogContent>
       </Dialog>
     </div>
