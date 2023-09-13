@@ -18,10 +18,6 @@ const Display = () => {
         return <Deployment />;
       case "Logsheet":
         return <Logsheet />;
-      //   case "CreateDeployment":
-      //     return <CreateDeployment />;
-      //   case "SelectUser":
-      //     return <SelectUser />;
       default:
         return null;
     }

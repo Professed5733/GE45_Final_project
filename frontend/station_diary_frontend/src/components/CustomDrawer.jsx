@@ -15,18 +15,9 @@ const CustomDrawer = (props) => {
   return (
     <Drawer anchor="left" open={open} onClose={onClose}>
       <List>
-        {/* Add your Drawer content here */}
         <ListItemButton onClick={() => handleDrawerItemClick("Dashboard")}>
           <ListItemText primary="Dashboard" />
         </ListItemButton>
-        {/* <ListItemButton
-          onClick={() => handleDrawerItemClick("CreateDeployment")}
-        >
-          <ListItemText primary="Create Deployment" />
-        </ListItemButton>
-        <ListItemButton onClick={() => handleDrawerItemClick("SelectUser")}>
-          <ListItemText primary="Select User" />
-        </ListItemButton> */}
         <ListItemButton onClick={() => handleDrawerItemClick("Deployment")}>
           <ListItemText primary="Deployment" />
         </ListItemButton>
