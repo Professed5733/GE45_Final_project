@@ -1,5 +1,4 @@
-import * as React from "react";
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import UserContext from "../context/user";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -8,11 +7,8 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import CustomDrawer from "./CustomDrawer";
 
 const Navbar = (props) => {
@@ -21,6 +17,13 @@ const Navbar = (props) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const { full_name, rank } = useContext(UserContext);
+
+  const capitalizeFirstLetter = (str) => {
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -32,6 +35,17 @@ const Navbar = (props) => {
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
+  };
+
+  // Add a state to control the password menu
+  const [passwordMenuOpen, setPasswordMenuOpen] = useState(false);
+
+  const handlePasswordMenuOpen = (event) => {
+    setPasswordMenuOpen(event.currentTarget);
+  };
+
+  const handlePasswordMenuClose = () => {
+    setPasswordMenuOpen(null);
   };
 
   return (
@@ -54,8 +68,40 @@ const Navbar = (props) => {
 
           <div>
             <Typography variant="h6" component="div">
-              Welcome {rank} {full_name}
+              Welcome {capitalizeFirstLetter(rank)} {full_name}
             </Typography>
+          </div>
+
+          <div>
+            <IconButton
+              color="inherit"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handlePasswordMenuOpen}
+            >
+              <AccountCircle />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={passwordMenuOpen}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(passwordMenuOpen)}
+              onClose={handlePasswordMenuClose}
+            >
+              {/* Add a menu item for changing password */}
+              <MenuItem onClick={handlePasswordMenuClose}>
+                Change Password
+              </MenuItem>
+            </Menu>
           </div>
         </Toolbar>
       </AppBar>

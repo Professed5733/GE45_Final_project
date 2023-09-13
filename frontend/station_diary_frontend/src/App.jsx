@@ -1,25 +1,26 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import React, { useState } from "react";
 import "./App.css";
 import Display from "./components/Display";
 import UserContext from "./context/user";
+import Login from "./components/Login";
 
 function App() {
-  const [accessToken, setAccessToken] = useState("MockAccessToken");
-  const [user_id, setUser_id] = useState(
-    "6cec861e-52bd-4bd5-a996-f529bf60b7a4"
-  );
-  const [full_name, setFull_name] = useState("Charlie");
-  const [email, setEmail] = useState("officer3@test.com");
-  const [rank, setRank] = useState("SERGENT");
-  const [role, setRole] = useState("PATROL OFFICER");
-  const [station, setStation] = useState("Nanyang Neighbourhood Police Centre");
-  const [deployment_id, setDeployment_id] = useState(
-    "0e68d68d-bb7d-4869-a678-b67605e2488a"
-  );
-  const [shift, setShift] = useState("Shift 1");
-  const [sector, setSector] = useState("J5R1");
+  const [accessToken, setAccessToken] = useState("");
+  const [user_id, setUser_id] = useState("");
+  const [full_name, setFull_name] = useState("");
+  const [email, setEmail] = useState("");
+  const [rank, setRank] = useState("");
+  const [role, setRole] = useState("");
+  const [station, setStation] = useState("");
+  const [deployment_id, setDeployment_id] = useState("");
+  const [shift, setShift] = useState("");
+  const [sector, setSector] = useState("");
+
+  const [showLogin, setShowLogin] = useState(true);
+
+  const handleCloseLogin = () => {
+    setShowLogin(false);
+  };
 
   return (
     <>
@@ -47,7 +48,10 @@ function App() {
           setSector,
         }}
       >
-        <Display />
+        {accessToken.length === 0 && showLogin && (
+          <Login handleCloseLogin={handleCloseLogin} />
+        )}
+        {accessToken.length > 0 && <Display />}
       </UserContext.Provider>
     </>
   );
