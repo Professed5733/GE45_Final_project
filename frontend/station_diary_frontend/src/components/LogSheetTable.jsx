@@ -73,6 +73,23 @@ const LogSheetTable = () => {
     setOpenRefLogEntry(false);
   };
 
+  const handleDeleteLogEntry = async (logEntryId) => {
+    const res = await fetchData(
+      "loggings/log-delete/" + logEntryId + "/",
+      "POST",
+      undefined,
+      undefined
+    );
+
+    if (res.ok) {
+      console.log(res.data);
+      getLogEntries();
+    } else {
+      alert(JSON.stringify(res.data));
+      console.log(res.data);
+    }
+  };
+
   const handleSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -144,7 +161,11 @@ const LogSheetTable = () => {
                     </Button>
                   </TableCell>
                   <TableCell>
-                    <Button>Delete</Button>
+                    <Button
+                      onClick={() => handleDeleteLogEntry(logEntry.logging_id)}
+                    >
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
