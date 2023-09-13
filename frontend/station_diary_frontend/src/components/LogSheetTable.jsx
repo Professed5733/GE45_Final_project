@@ -15,6 +15,7 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import NewLogEntry from "./NewLogEntry";
+import RefLogEntry from "./RefLogEntry";
 import {
   descendingComparator,
   getComparator,
@@ -51,14 +52,25 @@ const LogSheetTable = () => {
     getLogEntries();
   }, []);
 
-  const [openCreateDeployment, setOpenCreateDeployment] = useState(false);
+  const [openLogEntry, setopenLogEntry] = useState(false);
+  const [openRefLogEntry, setOpenRefLogEntry] = useState(false);
+  const [selectedLogEntry, setSelectedLogEntry] = useState(null);
 
   const handleOpenCreateLogEntry = () => {
-    setOpenCreateDeployment(true);
+    setopenLogEntry(true);
   };
 
   const handleCloseCreateLogEntry = () => {
-    setOpenCreateDeployment(false);
+    setopenLogEntry(false);
+  };
+
+  const handleOpenRefLogEntry = (logEntry) => {
+    setSelectedLogEntry(logEntry);
+    setOpenRefLogEntry(true);
+  };
+
+  const handleCloseRefLogEntry = () => {
+    setOpenRefLogEntry(false);
   };
 
   const handleSort = (property) => {
@@ -127,7 +139,9 @@ const LogSheetTable = () => {
                   <TableCell>{logEntry.destination_location}</TableCell>
                   <TableCell>{logEntry.details}</TableCell>
                   <TableCell>
-                    <Button>Reference</Button>
+                    <Button onClick={() => handleOpenRefLogEntry(logEntry)}>
+                      Reference
+                    </Button>
                   </TableCell>
                   <TableCell>
                     <Button>Delete</Button>
@@ -148,7 +162,7 @@ const LogSheetTable = () => {
       </Container>
 
       <Dialog
-        open={openCreateDeployment}
+        open={openLogEntry}
         onClose={handleCloseCreateLogEntry}
         maxWidth="md"
         fullWidth
@@ -156,6 +170,21 @@ const LogSheetTable = () => {
         <DialogContent>
           <NewLogEntry
             handleCloseCreateLogEntry={handleCloseCreateLogEntry}
+            getLogEntries={getLogEntries}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={openRefLogEntry}
+        onClose={handleCloseRefLogEntry}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogContent>
+          <RefLogEntry
+            logEntry={selectedLogEntry}
+            handleCloseRefLogEntry={handleCloseRefLogEntry}
             getLogEntries={getLogEntries}
           />
         </DialogContent>
