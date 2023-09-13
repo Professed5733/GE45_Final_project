@@ -1,12 +1,11 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import React, { useState } from "react";
 import "./App.css";
 import Display from "./components/Display";
 import UserContext from "./context/user";
+import Login from "./components/Login";
 
 function App() {
-  const [accessToken, setAccessToken] = useState("MockAccessToken");
+  const [accessToken, setAccessToken] = useState("");
   const [user_id, setUser_id] = useState(
     "6cec861e-52bd-4bd5-a996-f529bf60b7a4"
   );
@@ -20,6 +19,12 @@ function App() {
   );
   const [shift, setShift] = useState("Shift 1");
   const [sector, setSector] = useState("J5R1");
+
+  const [showLogin, setShowLogin] = useState(true);
+
+  const handleCloseLogin = () => {
+    setShowLogin(false);
+  };
 
   return (
     <>
@@ -47,7 +52,10 @@ function App() {
           setSector,
         }}
       >
-        <Display />
+        {accessToken.length === 0 && showLogin && (
+          <Login handleCloseLogin={handleCloseLogin} />
+        )}
+        {accessToken.length > 0 && <Display />}
       </UserContext.Provider>
     </>
   );
