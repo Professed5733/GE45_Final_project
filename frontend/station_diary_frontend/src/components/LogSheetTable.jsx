@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
+import NewLogEntry from "./NewLogEntry";
 import {
   descendingComparator,
   getComparator,
@@ -50,7 +51,15 @@ const LogSheetTable = () => {
     getLogEntries();
   }, []);
 
-  const handleOpenCreateLogEntry = () => {};
+  const [openCreateDeployment, setOpenCreateDeployment] = useState(false);
+
+  const handleOpenCreateLogEntry = () => {
+    setOpenCreateDeployment(true);
+  };
+
+  const handleCloseCreateDeployment = () => {
+    setOpenCreateDeployment(false);
+  };
 
   const handleSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -137,6 +146,17 @@ const LogSheetTable = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Container>
+
+      <Dialog
+        open={openCreateDeployment}
+        onClose={handleCloseCreateDeployment}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogContent>
+          <NewLogEntry />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

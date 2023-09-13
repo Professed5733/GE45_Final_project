@@ -89,14 +89,15 @@ const NewLogEntry = () => {
           name="details"
           value={formData.details}
           onChange={handleChange}
-          rowsMin={4}
+          minRows={4}
           placeholder="Enter details here..."
-          fullWidth
+          style={{ width: "100%" }} // Apply the width property
           margin="normal"
         />
         <Button variant="contained" color="primary" type="submit">
           Submit
         </Button>
+        <Button>Cancel</Button>
       </form>
     </div>
   );
