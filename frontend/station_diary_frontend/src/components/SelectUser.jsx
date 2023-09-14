@@ -17,6 +17,9 @@ import MenuItem from "@mui/material/MenuItem";
 const SelectUser = (props) => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
+
+  const { accessToken } = userCtx;
+
   const [selectedIds, setSelectedIds] = useState([]);
   const [displayUsers, setDisplayUsers] = useState([]);
   const [filter, setFilter] = useState({
@@ -32,7 +35,12 @@ const SelectUser = (props) => {
   const [rankOptions, setRankOptions] = useState([]);
 
   const getUsers = async () => {
-    const res = await fetchData("users/data-users/", "POST", filter, undefined);
+    const res = await fetchData(
+      "users/data-users/",
+      "POST",
+      filter,
+      accessToken
+    );
 
     if (res.ok) {
       setDisplayUsers(res.data);
@@ -47,7 +55,7 @@ const SelectUser = (props) => {
       "users/data-list/roles/",
       "GET",
       undefined,
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -62,7 +70,7 @@ const SelectUser = (props) => {
       "users/data-list/ranks/",
       "GET",
       undefined,
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -77,7 +85,7 @@ const SelectUser = (props) => {
       "users/data-list/stations/",
       "GET",
       undefined,
-      undefined
+      accessToken
     );
 
     if (res.ok) {

@@ -1,10 +1,11 @@
 const useFetch = () => {
-  const fetchData = async (endpoint, method, body, token) => {
+  const fetchData = async (endpoint, method, body, token, role) => {
     const res = await fetch(import.meta.env.VITE_SERVER + endpoint, {
       method,
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
+        // "X-User-Role": role, (Abandoned custom permission)
       },
       body: JSON.stringify(body),
     });

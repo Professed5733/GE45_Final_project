@@ -16,6 +16,7 @@ import CreateDeployment from "./CreateDeployment";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import EditDeployment from "./EditDeployment";
+import LogSheetDisplayOnly from "./LogSheetDisplayOnly";
 import {
   descendingComparator,
   getComparator,
@@ -25,11 +26,15 @@ import {
 const Deployment = () => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
+
+  const { accessToken, role } = userCtx;
+
   const [deployments, setDeployments] = useState([]);
   const [userNames, setUserNames] = useState({});
 
   const [openCreateDeployment, setOpenCreateDeployment] = useState(false);
   const [openEditDeployment, setOpenEditDeployment] = useState(false);
+  const [openLogSheetDisplayOnly, setOpenLogSheetDisplayOnly] = useState(false);
 
   const [selectedDeployment, setSelectedDeployment] = useState(null);
 
@@ -53,12 +58,21 @@ const Deployment = () => {
     setOpenEditDeployment(false);
   };
 
+  const handleOpenLogSheetDisplayOnly = (deployment) => {
+    setOpenLogSheetDisplayOnly(true);
+    setSelectedDeployment(deployment);
+  };
+
+  const handleCloseLogSheetDisplayOnly = () => {
+    setOpenLogSheetDisplayOnly(false);
+  };
+
   const getDeployments = async () => {
     const res = await fetchData(
       "deployments/data-deployment/",
       "POST",
       {},
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -80,7 +94,7 @@ const Deployment = () => {
       "users/data-name/",
       "POST",
       { user_ids: userIds },
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -112,7 +126,7 @@ const Deployment = () => {
       "deployments/delete/" + deploymentId + "/",
       "POST",
       undefined,
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -150,9 +164,11 @@ const Deployment = () => {
     <div style={{ marginLeft: "20px", overflow: "auto" }}>
       <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
         <Typography variant="h5">Deployment</Typography>
-        <Button variant="outlined" onClick={handleOpenCreateDeployment}>
-          Create Deployment
-        </Button>
+        {["TEAM LEADER", "DEPUTY TEAM LEADER"].includes(role) && (
+          <Button variant="outlined" onClick={handleOpenCreateDeployment}>
+            Create Deployment
+          </Button>
+        )}
         <Table>
           <TableHead>
             <TableRow>
@@ -180,6 +196,7 @@ const Deployment = () => {
               <TableCell>Officers</TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -199,20 +216,35 @@ const Deployment = () => {
                       .join(", ")}
                   </TableCell>
                   <TableCell>
-                    <Button
-                      onClick={() => handleOpenEditDeployment(deployment)}
-                    >
-                      Update
-                    </Button>
+                    {["TEAM LEADER", "DEPUTY TEAM LEADER"].includes(role) && (
+                      <Button
+                        onClick={() => handleOpenEditDeployment(deployment)}
+                      >
+                        Update
+                      </Button>
+                    )}
                   </TableCell>
                   <TableCell>
-                    <Button
-                      onClick={() =>
-                        handleDeleteDeployment(deployment.deployment_id)
-                      }
-                    >
-                      Delete
-                    </Button>
+                    {["TEAM LEADER", "DEPUTY TEAM LEADER"].includes(role) && (
+                      <Button
+                        onClick={() =>
+                          handleOpenLogSheetDisplayOnly(deployment)
+                        }
+                      >
+                        View Log
+                      </Button>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {["TEAM LEADER"].includes(role) && (
+                      <Button
+                        onClick={() =>
+                          handleDeleteDeployment(deployment.deployment_id)
+                        }
+                      >
+                        Delete
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -254,6 +286,20 @@ const Deployment = () => {
             deployment={selectedDeployment}
             handleCloseEditDeployment={handleCloseEditDeployment}
             getDeployments={getDeployments}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={openLogSheetDisplayOnly}
+        onClose={handleCloseLogSheetDisplayOnly}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogContent>
+          <LogSheetDisplayOnly
+            deployment={selectedDeployment}
+            handleCloseLogSheetDisplayOnly={handleCloseLogSheetDisplayOnly}
           />
         </DialogContent>
       </Dialog>

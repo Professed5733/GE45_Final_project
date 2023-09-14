@@ -5,28 +5,24 @@ import Container from "@mui/material/Container";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import NewLogEntry from "./NewLogEntry";
-import RefLogEntry from "./RefLogEntry";
 import {
   descendingComparator,
   getComparator,
   stableSort,
 } from "../utilities/tableSorting";
 
-const LogSheetTable = () => {
+const LogSheetDisplayOnly = (props) => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
 
-  const { deployment_id, accessToken, sector, shift } = userCtx;
+  const { accessToken } = userCtx;
+  const { deployment, handleCloseLogSheetDisplayOnly } = props;
 
   const [logEntries, setLogEntries] = useState([]);
   const [orderBy, setOrderBy] = useState("log_date");
@@ -34,7 +30,7 @@ const LogSheetTable = () => {
 
   const getLogEntries = async () => {
     const res = await fetchData(
-      "loggings/log-get/" + deployment_id + "/",
+      "loggings/log-get/" + deployment.deployment_id + "/",
       "GET",
       undefined,
       accessToken
@@ -51,44 +47,6 @@ const LogSheetTable = () => {
   useEffect(() => {
     getLogEntries();
   }, []);
-
-  const [openLogEntry, setopenLogEntry] = useState(false);
-  const [openRefLogEntry, setOpenRefLogEntry] = useState(false);
-  const [selectedLogEntry, setSelectedLogEntry] = useState(null);
-
-  const handleOpenCreateLogEntry = () => {
-    setopenLogEntry(true);
-  };
-
-  const handleCloseCreateLogEntry = () => {
-    setopenLogEntry(false);
-  };
-
-  const handleOpenRefLogEntry = (logEntry) => {
-    setSelectedLogEntry(logEntry);
-    setOpenRefLogEntry(true);
-  };
-
-  const handleCloseRefLogEntry = () => {
-    setOpenRefLogEntry(false);
-  };
-
-  const handleDeleteLogEntry = async (logEntryId) => {
-    const res = await fetchData(
-      "loggings/log-delete/" + logEntryId + "/",
-      "POST",
-      undefined,
-      accessToken
-    );
-
-    if (res.ok) {
-      console.log(res.data);
-      getLogEntries();
-    } else {
-      alert(JSON.stringify(res.data));
-      console.log(res.data);
-    }
-  };
 
   const handleSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -107,16 +65,10 @@ const LogSheetTable = () => {
     setRowsPerPage(+event.target.value);
     setPage(0); // Reset to the first page when changing the number of rows per page
   };
-
   return (
     <div style={{ marginLeft: "20px", overflow: "auto" }}>
       <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
-        <Typography variant="h5">
-          Logsheet {sector} {shift}
-        </Typography>
-        <Button variant="outlined" onClick={handleOpenCreateLogEntry}>
-          New Entry
-        </Button>
+        <Typography variant="h5">Logsheet</Typography>
         <Table>
           <TableHead>
             <TableRow>
@@ -142,8 +94,6 @@ const LogSheetTable = () => {
               <TableCell>Current Location</TableCell>
               <TableCell>Destination Location</TableCell>
               <TableCell>Details</TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -157,18 +107,6 @@ const LogSheetTable = () => {
                   <TableCell>{logEntry.current_location}</TableCell>
                   <TableCell>{logEntry.destination_location}</TableCell>
                   <TableCell>{logEntry.details}</TableCell>
-                  <TableCell>
-                    <Button onClick={() => handleOpenRefLogEntry(logEntry)}>
-                      Reference
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      onClick={() => handleDeleteLogEntry(logEntry.logging_id)}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -182,38 +120,10 @@ const LogSheetTable = () => {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
+        <Button onClick={handleCloseLogSheetDisplayOnly}>Close</Button>
       </Container>
-
-      <Dialog
-        open={openLogEntry}
-        onClose={handleCloseCreateLogEntry}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogContent>
-          <NewLogEntry
-            handleCloseCreateLogEntry={handleCloseCreateLogEntry}
-            getLogEntries={getLogEntries}
-          />
-        </DialogContent>
-      </Dialog>
-
-      <Dialog
-        open={openRefLogEntry}
-        onClose={handleCloseRefLogEntry}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogContent>
-          <RefLogEntry
-            logEntry={selectedLogEntry}
-            handleCloseRefLogEntry={handleCloseRefLogEntry}
-            getLogEntries={getLogEntries}
-          />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
 
-export default LogSheetTable;
+export default LogSheetDisplayOnly;
