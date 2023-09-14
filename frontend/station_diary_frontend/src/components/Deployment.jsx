@@ -26,7 +26,7 @@ const Deployment = () => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
 
-  const { accessToken } = userCtx;
+  const { accessToken, role } = userCtx;
 
   const [deployments, setDeployments] = useState([]);
   const [userNames, setUserNames] = useState({});
@@ -153,9 +153,11 @@ const Deployment = () => {
     <div style={{ marginLeft: "20px", overflow: "auto" }}>
       <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
         <Typography variant="h5">Deployment</Typography>
-        <Button variant="outlined" onClick={handleOpenCreateDeployment}>
-          Create Deployment
-        </Button>
+        {["TEAM LEADER", "DEPUTY TEAM LEADER"].includes(role) && (
+          <Button variant="outlined" onClick={handleOpenCreateDeployment}>
+            Create Deployment
+          </Button>
+        )}
         <Table>
           <TableHead>
             <TableRow>
@@ -202,20 +204,24 @@ const Deployment = () => {
                       .join(", ")}
                   </TableCell>
                   <TableCell>
-                    <Button
-                      onClick={() => handleOpenEditDeployment(deployment)}
-                    >
-                      Update
-                    </Button>
+                    {["TEAM LEADER", "DEPUTY TEAM LEADER"].includes(role) && (
+                      <Button
+                        onClick={() => handleOpenEditDeployment(deployment)}
+                      >
+                        Update
+                      </Button>
+                    )}
                   </TableCell>
                   <TableCell>
-                    <Button
-                      onClick={() =>
-                        handleDeleteDeployment(deployment.deployment_id)
-                      }
-                    >
-                      Delete
-                    </Button>
+                    {["TEAM LEADER"].includes(role) && (
+                      <Button
+                        onClick={() =>
+                          handleDeleteDeployment(deployment.deployment_id)
+                        }
+                      >
+                        Delete
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
