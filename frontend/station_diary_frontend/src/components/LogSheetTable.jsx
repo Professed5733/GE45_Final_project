@@ -26,7 +26,7 @@ const LogSheetTable = () => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
 
-  const deployment_id = userCtx.deployment_id;
+  const { deployment_id, accessToken, role } = userCtx;
 
   const [logEntries, setLogEntries] = useState([]);
   const [orderBy, setOrderBy] = useState("log_date");
@@ -37,7 +37,7 @@ const LogSheetTable = () => {
       "loggings/log-get/" + deployment_id + "/",
       "GET",
       undefined,
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -78,7 +78,7 @@ const LogSheetTable = () => {
       "loggings/log-delete/" + logEntryId + "/",
       "POST",
       undefined,
-      undefined
+      accessToken
     );
 
     if (res.ok) {

@@ -25,6 +25,9 @@ import {
 const Deployment = () => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
+
+  const { accessToken } = userCtx;
+
   const [deployments, setDeployments] = useState([]);
   const [userNames, setUserNames] = useState({});
 
@@ -58,7 +61,7 @@ const Deployment = () => {
       "deployments/data-deployment/",
       "POST",
       {},
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -80,7 +83,7 @@ const Deployment = () => {
       "users/data-name/",
       "POST",
       { user_ids: userIds },
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -112,7 +115,7 @@ const Deployment = () => {
       "deployments/delete/" + deploymentId + "/",
       "POST",
       undefined,
-      undefined
+      accessToken
     );
 
     if (res.ok) {

@@ -1,10 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import UserContext from "../context/user";
 import useFetch from "../hooks/useFetch";
@@ -14,7 +10,7 @@ const RefLogEntry = (props) => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
 
-  const deployment_id = userCtx.deployment_id;
+  const { deployment_id, accessToken, role } = userCtx;
 
   const [formData, setFormData] = useState({
     deployment: deployment_id,
@@ -49,7 +45,7 @@ const RefLogEntry = (props) => {
       "loggings/log-create/",
       "PUT",
       formDataToSend,
-      undefined
+      accessToken
     );
 
     if (res.ok) {

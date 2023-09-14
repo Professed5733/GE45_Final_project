@@ -1,5 +1,3 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 from .models import Rank, Role, PoliceStation, Division, Account
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -67,6 +65,7 @@ class seedBase(APIView):
         return Response({"message": "Initial data seeding complete"}, status=status.HTTP_201_CREATED)
 
 class DataListView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, data_type):
         if data_type == "divisions":
             divisions = Division.objects.all()

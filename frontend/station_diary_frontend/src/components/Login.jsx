@@ -10,7 +10,7 @@ import UserContext from "../context/user";
 import useFetch from "../hooks/useFetch";
 import jwtDecode from "jwt-decode";
 
-const Login = (props) => {
+const Login = () => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
 

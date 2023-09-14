@@ -7,6 +7,7 @@ from users.models import PoliceStation, Account
 from .serializers import (SectorSerializer, ShiftSerializer, CreateDeploymentSerializer, EditDeploymentSerializer,
                           GetDeploymentSerializer)
 from rest_framework.permissions import IsAuthenticated
+# from users.permissions import IsTeamLeader, IsTeamORDeputyTeamLeader (Abandoned Custom Permission)
 import json
 
 # Create your views here.
@@ -73,6 +74,10 @@ class seedBase(APIView):
 
 class DataListView(APIView):
     permission_classes = (IsAuthenticated,)
+
+    # def get(self, request, data_type):
+    #     return Response([{'sector': 'j5r1'}])
+
     def get(self, request, data_type):
         if data_type == "sector":
             sector = Sector.objects.all()
@@ -82,6 +87,8 @@ class DataListView(APIView):
             serializer = ShiftSerializer(shift, many=True)
         else:
             return Response({"error": "Invalid data type"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # print(serializer.data)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 

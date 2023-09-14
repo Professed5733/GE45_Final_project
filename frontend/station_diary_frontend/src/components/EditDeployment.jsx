@@ -16,6 +16,9 @@ const EditDeployment = (props) => {
 
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
+
+  const { accessToken } = userCtx;
+
   const [formData, setFormData] = useState({
     date: deployment.date || "",
     sector: deployment.sector || "",
@@ -34,7 +37,7 @@ const EditDeployment = (props) => {
       "deployments/data-list/sector/",
       "GET",
       undefined,
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -50,7 +53,7 @@ const EditDeployment = (props) => {
       "deployments/data-list/shift/",
       "GET",
       undefined,
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -101,7 +104,7 @@ const EditDeployment = (props) => {
       "deployments/edit/" + deployment.deployment_id + "/",
       "POST",
       formData,
-      undefined
+      accessToken
     );
 
     if (res.ok) {

@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -14,6 +13,9 @@ import SelectUser from "./SelectUser";
 const CreateDeployment = (props) => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
+
+  const { accessToken, role } = userCtx;
+
   const [formData, setFormData] = useState({
     date: "",
     sector: "",
@@ -34,7 +36,7 @@ const CreateDeployment = (props) => {
       "deployments/data-list/sector/",
       "GET",
       undefined,
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -50,8 +52,15 @@ const CreateDeployment = (props) => {
       "deployments/data-list/shift/",
       "GET",
       undefined,
-      undefined
+      accessToken
     );
+
+    // const res = await fetch(
+    //   "http://localhost:8000/deployments/data-list/shift/",
+    //   {
+    //     headers: { "Content-Type": "application/json" },
+    //   }
+    // );
 
     if (res.ok) {
       const extractedShifts = res.data.map((shiftData) => shiftData.shift);
@@ -101,7 +110,7 @@ const CreateDeployment = (props) => {
       "deployments/create/",
       "PUT",
       formData,
-      undefined
+      accessToken
     );
 
     if (res.ok) {

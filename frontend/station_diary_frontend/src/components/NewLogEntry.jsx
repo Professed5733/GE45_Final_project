@@ -15,7 +15,7 @@ const NewLogEntry = (props) => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
 
-  const deployment_id = userCtx.deployment_id;
+  const { deployment_id, accessToken, role } = userCtx;
 
   const [formData, setFormData] = useState({
     deployment: deployment_id,
@@ -34,7 +34,7 @@ const NewLogEntry = (props) => {
       "loggings/data-list/tencode/",
       "GET",
       undefined,
-      undefined
+      accessToken
     );
 
     if (res.ok) {
@@ -71,7 +71,7 @@ const NewLogEntry = (props) => {
       "loggings/log-create/",
       "PUT",
       formDataToSend,
-      undefined
+      accessToken
     );
 
     if (res.ok) {
