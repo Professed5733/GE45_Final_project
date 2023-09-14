@@ -144,7 +144,7 @@ DATABASES = {
 }
 
 
-# Password validation
+# Disable Password validation for development
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
