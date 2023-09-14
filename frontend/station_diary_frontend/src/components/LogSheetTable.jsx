@@ -26,7 +26,7 @@ const LogSheetTable = () => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
 
-  const { deployment_id, accessToken, role } = userCtx;
+  const { deployment_id, accessToken, sector, shift } = userCtx;
 
   const [logEntries, setLogEntries] = useState([]);
   const [orderBy, setOrderBy] = useState("log_date");
@@ -111,7 +111,9 @@ const LogSheetTable = () => {
   return (
     <div style={{ marginLeft: "20px", overflow: "auto" }}>
       <Container sx={{ textAlign: "left", marginBottom: "20px" }}>
-        <Typography variant="h5">Logsheet</Typography>
+        <Typography variant="h5">
+          Logsheet {sector} {shift}
+        </Typography>
         <Button variant="outlined" onClick={handleOpenCreateLogEntry}>
           New Entry
         </Button>
