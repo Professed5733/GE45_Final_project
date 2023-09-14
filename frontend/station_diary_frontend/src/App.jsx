@@ -22,6 +22,19 @@ function App() {
     setShowLogin(false);
   };
 
+  const handleLogout = () => {
+    setAccessToken("");
+    setUser_id("");
+    setFull_name("");
+    setEmail("");
+    setRank("");
+    setRole("");
+    setStation("");
+    setDeployment_id("");
+    setShift("");
+    setSector("");
+  };
+
   return (
     <>
       <UserContext.Provider
@@ -46,6 +59,7 @@ function App() {
           setShift,
           sector,
           setSector,
+          handleLogout,
         }}
       >
         {accessToken.length === 0 && showLogin && (

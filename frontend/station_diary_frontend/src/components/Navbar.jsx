@@ -18,7 +18,7 @@ const Navbar = (props) => {
   const { setSelectedComponent } = props;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const { full_name, rank } = useContext(UserContext);
+  const { full_name, rank, handleLogout } = useContext(UserContext);
 
   const [openChangePassword, setOpenChangePassword] = useState(false);
 
@@ -102,7 +102,6 @@ const Navbar = (props) => {
                 open={Boolean(passwordMenuOpen)}
                 onClose={handlePasswordMenuClose}
               >
-                {/* Add a menu item for changing password */}
                 <MenuItem
                   onClick={() => {
                     handlePasswordMenuClose();
@@ -110,6 +109,13 @@ const Navbar = (props) => {
                   }}
                 >
                   Change Password
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleLogout();
+                  }}
+                >
+                  Log Out
                 </MenuItem>
               </Menu>
             </div>

@@ -14,6 +14,8 @@ const ChangePassword = (props) => {
   const userCtx = useContext(UserContext);
   const fetchData = useFetch();
 
+  const handleLogout = userCtx.handleLogout;
+
   const [formData, setFormData] = useState({
     old_password: "",
     new_password: "",
@@ -48,6 +50,7 @@ const ChangePassword = (props) => {
         alert(JSON.stringify(res.data));
         console.log(res.data);
         handleCloseChangePassword();
+        handleLogout();
       } else {
         alert(JSON.stringify(res.data));
         console.log(res.data);
