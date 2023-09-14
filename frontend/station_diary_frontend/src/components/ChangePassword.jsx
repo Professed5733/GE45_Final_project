@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -6,11 +6,17 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import UserContext from "../context/user";
+import useFetch from "../hooks/useFetch";
 
-const ChangePassword = () => {
+const ChangePassword = (props) => {
+  const { handleCloseChangePassword } = props;
+  const userCtx = useContext(UserContext);
+  const fetchData = useFetch();
+
   const [formData, setFormData] = useState({
-    oldPassword: "",
-    newPassword: "",
+    old_password: "",
+    new_password: "",
     confirmNewPassword: "",
     showOldPassword: false,
     showNewPassword: false,
@@ -26,22 +32,31 @@ const ChangePassword = () => {
     setFormData({ ...formData, [field]: !formData[field] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.newPassword !== formData.confirmNewPassword) {
-      // Passwords do not match, handle error or display a message
+    if (formData.new_password !== formData.confirmNewPassword) {
+      alert("Passwords do not match");
       console.log("Passwords do not match");
     } else {
-      // Handle password change submission with the following payload
-      const payload = {
-        old_password: formData.oldPassword,
-        new_password: formData.newPassword,
-      };
-      console.log(payload);
+      const res = await fetchData(
+        "users/token/change-password/",
+        "POST",
+        formData,
+        userCtx.accessToken
+      );
+      if (res.ok) {
+        alert(JSON.stringify(res.data));
+        console.log(res.data);
+        handleCloseChangePassword();
+      } else {
+        alert(JSON.stringify(res.data));
+        console.log(res.data);
+      }
+
       // Clear form fields or perform any necessary actions
       setFormData({
-        oldPassword: "",
-        newPassword: "",
+        old_password: "",
+        new_password: "",
         confirmNewPassword: "",
         showOldPassword: false,
         showNewPassword: false,
@@ -57,8 +72,8 @@ const ChangePassword = () => {
           <TextField
             label="Old Password"
             type={formData.showOldPassword ? "text" : "password"}
-            name="oldPassword"
-            value={formData.oldPassword}
+            name="old_password"
+            value={formData.old_password}
             onChange={handleChange}
             InputProps={{
               endAdornment: (
@@ -82,8 +97,8 @@ const ChangePassword = () => {
           <TextField
             label="New Password"
             type={formData.showNewPassword ? "text" : "password"}
-            name="newPassword"
-            value={formData.newPassword}
+            name="new_password"
+            value={formData.new_password}
             onChange={handleChange}
             InputProps={{
               endAdornment: (
@@ -133,6 +148,7 @@ const ChangePassword = () => {
         <Button variant="contained" color="primary" type="submit">
           Change Password
         </Button>
+        <Button onClick={handleCloseChangePassword}>Cancel</Button>
       </form>
     </div>
   );
