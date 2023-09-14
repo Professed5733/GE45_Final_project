@@ -16,6 +16,7 @@ import CreateDeployment from "./CreateDeployment";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import EditDeployment from "./EditDeployment";
+import LogSheetDisplayOnly from "./LogSheetDisplayOnly";
 import {
   descendingComparator,
   getComparator,
@@ -33,6 +34,7 @@ const Deployment = () => {
 
   const [openCreateDeployment, setOpenCreateDeployment] = useState(false);
   const [openEditDeployment, setOpenEditDeployment] = useState(false);
+  const [openLogSheetDisplayOnly, setOpenLogSheetDisplayOnly] = useState(false);
 
   const [selectedDeployment, setSelectedDeployment] = useState(null);
 
@@ -54,6 +56,15 @@ const Deployment = () => {
 
   const handleCloseEditDeployment = () => {
     setOpenEditDeployment(false);
+  };
+
+  const handleOpenLogSheetDisplayOnly = (deployment) => {
+    setOpenLogSheetDisplayOnly(true);
+    setSelectedDeployment(deployment);
+  };
+
+  const handleCloseLogSheetDisplayOnly = () => {
+    setOpenLogSheetDisplayOnly(false);
   };
 
   const getDeployments = async () => {
@@ -185,6 +196,7 @@ const Deployment = () => {
               <TableCell>Officers</TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -209,6 +221,17 @@ const Deployment = () => {
                         onClick={() => handleOpenEditDeployment(deployment)}
                       >
                         Update
+                      </Button>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {["TEAM LEADER", "DEPUTY TEAM LEADER"].includes(role) && (
+                      <Button
+                        onClick={() =>
+                          handleOpenLogSheetDisplayOnly(deployment)
+                        }
+                      >
+                        View Log
                       </Button>
                     )}
                   </TableCell>
@@ -263,6 +286,20 @@ const Deployment = () => {
             deployment={selectedDeployment}
             handleCloseEditDeployment={handleCloseEditDeployment}
             getDeployments={getDeployments}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={openLogSheetDisplayOnly}
+        onClose={handleCloseLogSheetDisplayOnly}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogContent>
+          <LogSheetDisplayOnly
+            deployment={selectedDeployment}
+            handleCloseLogSheetDisplayOnly={handleCloseLogSheetDisplayOnly}
           />
         </DialogContent>
       </Dialog>
