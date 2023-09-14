@@ -1,11 +1,12 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import UpdateAPIView
 from rest_framework import status
 from django.shortcuts import render
 from .models import Sector, Shift, Deployment
 from users.models import PoliceStation, Account
-from .serializers import SectorSerializer, ShiftSerializer, CreateDeploymentSerializer, EditDeploymentSerializer, GetDeploymentSerializer
+from .serializers import (SectorSerializer, ShiftSerializer, CreateDeploymentSerializer, EditDeploymentSerializer,
+                          GetDeploymentSerializer)
+from rest_framework.permissions import IsAuthenticated
 import json
 
 # Create your views here.
@@ -71,6 +72,7 @@ class seedBase(APIView):
         return Response({"message": "Initial deployment data seeding complete"}, status=status.HTTP_201_CREATED)
 
 class DataListView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, data_type):
         if data_type == "sector":
             sector = Sector.objects.all()
@@ -84,6 +86,7 @@ class DataListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CreateDeploymentView(APIView):
+    permission_classes = (IsAuthenticated,)
     def put(self, request, format=None):
         serializer = CreateDeploymentSerializer(data=request.data)
         if serializer.is_valid():
@@ -92,6 +95,7 @@ class CreateDeploymentView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EditDeploymentView(APIView):
+    permission_classes = (IsAuthenticated,)
     def post(self, request, deployment_id, format=None):
         try:
             deployment = Deployment.objects.get(deployment_id=deployment_id)
@@ -108,6 +112,7 @@ class EditDeploymentView(APIView):
 
 
 class GetDeploymentsWithFilterView(APIView):
+    permission_classes = (IsAuthenticated,)
     def post(self, request, format=None):
         # Parse the JSON data from the request body
         try:
@@ -161,6 +166,7 @@ class GetDeploymentsWithFilterView(APIView):
         return Response(serializer.data)
 
 class DeleteDeployment(APIView):
+    permission_classes = (IsAuthenticated,)
     def post(self, request, deployment_id):
         try:
             deployment = Deployment.objects.get(deployment_id=deployment_id)

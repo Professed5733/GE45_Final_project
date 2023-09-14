@@ -144,6 +144,7 @@ class ChangePasswordView(APIView):
 
 
 class GetUsersWithFilterView(APIView):
+    permission_classes = (IsAuthenticated,)
     def post(self, request, format=None):
         # Parse the JSON data from the request body
 
@@ -188,6 +189,7 @@ class GetUsersWithFilterView(APIView):
         return Response(serializer.data)
 
 class GetUserNamesView(APIView):
+    permission_classes = (IsAuthenticated,)
     def post(self, request, format=None):
         serializer = GetUserNamesSerializer(data=request.data)
 

@@ -8,6 +8,7 @@ from .models import SubjectStatus, Tencode, PINType, ContactType, SubjectContact
 from .serializers import (TencodeSerializer, ContactTypeSerializer, PINTypeSerializer, SubjectStatusSerializer,
                           CreateSubjectSerializer, EditSubjectSerializer, GetSubjectListSerializer, LoggingSerializer,
                           GetLogSerializer)
+from rest_framework.permissions import IsAuthenticated
 import json
 
 # Create your views here.
@@ -74,6 +75,7 @@ class seedBase(APIView):
 
 
 class DataListView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, data_type):
         if data_type == "tencode":
             divisions = Tencode.objects.all()
@@ -93,6 +95,7 @@ class DataListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CreateSubjectView(APIView):
+    permission_classes = (IsAuthenticated,)
     def put(self, request, format=None):
         serializer = CreateSubjectSerializer(data=request.data)
         if serializer.is_valid():
@@ -116,6 +119,7 @@ class CreateSubjectView(APIView):
 
 
 class EditSubjectView(APIView):
+    permission_classes = (IsAuthenticated,)
     def post(self, request, subject_id, format=None):
         try:
             subject = Subject.objects.get(subject_id=subject_id)
@@ -148,6 +152,7 @@ class EditSubjectView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GetSubjectsView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
     serializer_class = GetSubjectListSerializer
 
     def get_queryset(self):
@@ -187,6 +192,7 @@ class GetSubjectsView(generics.ListAPIView):
         return Response(serializer.data)
 
 class CreatLoggingeView(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def put(self, request, format=None):
         serializer = LoggingSerializer(data=request.data)
@@ -196,6 +202,7 @@ class CreatLoggingeView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DeleteLogging(APIView):
+    permission_classes = (IsAuthenticated,)
     def post(self, request, logging_id):
         try:
             logging_entry = Logging.objects.get(logging_id=logging_id)
@@ -209,6 +216,7 @@ class DeleteLogging(APIView):
         return Response({"message": "Logging entry set as deleted"}, status=status.HTTP_200_OK)
 
 class GetLoggingByDeployment(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, deployment_id):
         # Retrieve all logging entries associated with the specified deployment_id
         logging_entries = Logging.objects.filter(deployment__deployment_id=deployment_id, is_deleted=False)
