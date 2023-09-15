@@ -104,7 +104,6 @@ A Digital Station Diary/Log Sheet application to centralize and assist with mana
 * [React](https://react.dev/)
   * [MaterialUI](https://mui.com/)
     
-## References
 
 # Backend
 ## Getting Started
@@ -153,6 +152,9 @@ A standard patrol team would require user with 1 Team Leader role, 1 Deputy Team
 ![Django Admin Account Page](./public/screenshot14.JPG)
 </details>  
 
+## API Dictionary
+https://docs.google.com/spreadsheets/d/17G7RqZnCMbQ-QupGSGwACAmvMCWKUp1b18p2bGu_PU8/edit#gid=0
+
 # Frontend
 ## Getting Started
 ## Installation
@@ -183,4 +185,12 @@ npm run dev
 ```
 
 ## Usage
+
+Upon login, users will be provided an access token along with other claims. If a deployment is a provided for a user/users and the deployment is set as active, a deployment_id is sent to the user upon login, allowing for the specific renders and permissions for the front end.
+
+<details>
+<summary>Click to view an example of JWT token</summary>
+  
+![JWT Token](./public/JWT.JPG)
+</details>  
 
