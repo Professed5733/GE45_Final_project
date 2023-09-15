@@ -5,5 +5,11 @@ A Digital Station Diary/Log Sheet application to centralize and assist with mana
 # Table of Contents
 
 # Backend
+## Getting Started
+## Installation
+## Usage
 
 # Frontend
+## Getting Started
+## Installation
+## Usage
