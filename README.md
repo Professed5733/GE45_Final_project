@@ -147,6 +147,12 @@ With superuser, create user accounts accordingly.
 
 A standard patrol team would require user with 1 Team Leader role, 1 Deputy Team Leader role and 1 Patrol Officer role. Refer to screenshot example.
 
+<details>
+<summary>Click to view Django Admin Account Page screenshot</summary>
+  
+![Django Admin Account Page](./public/screenshot14.JPG)
+</details>  
+
 # Frontend
 ## Getting Started
 ## Installation
