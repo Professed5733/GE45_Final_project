@@ -4,7 +4,7 @@ A Digital Station Diary/Log Sheet application to centralize and assist with mana
 
 # Table of Contents
 
-# Screenshots
+## Screenshots
 <details>
 <summary>Click to view SQL Diagram</summary>
 
@@ -22,80 +22,89 @@ A Digital Station Diary/Log Sheet application to centralize and assist with mana
 <details>
 <summary>Click to view Dashboard page with no deployment screenshot</summary>
 
-![Login](./public/screenshot2.JPG)
+![Dashboard no deployment](./public/screenshot2.JPG)
 </details> 
 
 <details>
 <summary>Click to view Dashboard page with deployment screenshot</summary>
   
-![Login](./public/screenshot8.JPG)
+![Dashboard with deployment](./public/screenshot8.JPG)
 </details>  
 
 <details>
 <summary>Click to view Collapsible drawer screenshot</summary>
   
-![Login](./public/screenshot3.JPG)
+![Drawer](./public/screenshot3.JPG)
 </details>
 
 <details>
 <summary>Click to view Deployment page screenshot</summary>
   
-![Login](./public/screenshot4.JPG)
+![Deployment](./public/screenshot4.JPG)
 </details>  
 
 <details>
 <summary>Click to view Create Deployment Dialog screenshot</summary>
   
-![Login](./public/screenshot5.JPG)
+![Create Deployment](./public/screenshot5.JPG)
 </details>
 
 <details>
 <summary>Click to view Edit Deployment Dialog screenshot</summary>
   
-![Login](./public/screenshot6.JPG)
+![Edit Deployment](./public/screenshot6.JPG)
 </details>
 
 <details>
 <summary>Click to view View Logsheet Dialog screenshot</summary>
   
-![Login](./public/screenshot7.JPG)
+![Logsheet Dialog](./public/screenshot7.JPG)
 </details>  
 
 <details>
-<summary>Click to view Logsheet Dialog screenshot</summary>
+<summary>Click to view Logsheet screenshot</summary>
   
-![Login](./public/screenshot9.JPG)
+![Logsheet](./public/screenshot9.JPG)
 </details>  
 
 <details>
 <summary>Click to view New Log Entry Dialog screenshot</summary>
   
-![Login](./public/screenshot11.JPG)
+![New Logsheet Entry](./public/screenshot11.JPG)
 </details>  
 
 <details>
 <summary>Click to view Change Password Dialog screenshot</summary>
   
-![Login](./public/screenshot10.JPG)
+![Change Password](./public/screenshot10.JPG)
 </details>  
 
 <details>
 <summary>Click to view Django Admin Page screenshot</summary>
   
-![Login](./public/screenshot12.JPG)
+![Django Admin Page](./public/screenshot12.JPG)
 </details>  
 
 <details>
 <summary>Click to view Django Admin Page Create New Account screenshot</summary>
   
-![Login](./public/screenshot13.JPG)
+![Django Admin Page Create New Account](./public/screenshot13.JPG)
 </details>  
 
 <details>
 <summary>Click to view Django Admin Account Page screenshot</summary>
   
-![Login](./public/screenshot14.JPG)
+![Django Admin Account Page](./public/screenshot14.JPG)
 </details>  
+
+## Technologies used
+* [PostgreSql](https://www.postgresql.org/download/)
+* [Python](https://www.python.org/)
+* [Django](https://www.djangoproject.com/download/)
+* [React](https://react.dev/)
+  * [MaterialUI](https://mui.com/)
+    
+## References
 
 # Backend
 ## Getting Started
@@ -125,6 +134,19 @@ pip install python-decouple
 
 ## Usage
 
+Create super user
+```
+python manage.py createsuperuser
+```
+Run server
+```
+python manage.py runserver
+```
+
+With superuser, create user accounts accordingly.
+
+A standard patrol team would require user with 1 Team Leader role, 1 Deputy Team Leader role and 1 Patrol Officer role. Refer to screenshot example.
+
 # Frontend
 ## Getting Started
 ## Installation
@@ -141,15 +163,18 @@ package.json
 7. `react-dom` (Version 18.2.0)
 8. `react-router-dom` (Version 6.15.0)
 
+run installation
+```
+npm i
+```
 .env file
 ```
 VITE_SERVER=http://127.0.0.1:8000/
 ```
-
-run installation
+Run server
 ```
-npm i
-``` 
+npm run dev
+```
 
 ## Usage
 
